@@ -15,6 +15,20 @@
         resolve(self);
       });
     },
+
+    createFrame: function(x, y, width, height) {
+      if (typeof x === 'object') {
+        y = x.y;
+        width = x.width;
+        height = x.height;
+        x = x.x;
+      }
+      var newTexture = phina.pixi.PixiTexture();
+      newTexture.phinaTexture = this.phinaTexture;
+      newTexture.pixiTexture = new PIXI.Texture(this.pixiTexture.baseTexture, new PIXI.math.Rectangle(x, y, width, height));
+
+      return newTexture;
+    }
     
   });
 
