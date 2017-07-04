@@ -6,7 +6,7 @@ ghelper.require();
 var SCRIPTS = `
 pixitexture
 pixielement
-
+pixisprite
 `.split('\n').filter(script=>!!script.trim()).map(function(script){
   return './src/' + script.trim() + '.js';
 });
