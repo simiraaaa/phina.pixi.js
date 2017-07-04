@@ -9,12 +9,16 @@
     _load: function(resolve) {
       var self = this;
       var texture = phina.asset.Texture();
-      texture.load(path).then(function(texture) {
+      texture.load(this.src).then(function(texture) {
         self.pixiTexture = new PIXI.Texture(texture.domElement);
         self.phinaTexture = texture;
         resolve(self);
       });
     },
     
+  });
+
+  phina.asset.AssetManager.register('pixi', function(key, path) {
+    return phina.pixi.PixiTexture().load(path);
   });
 }(phina));
