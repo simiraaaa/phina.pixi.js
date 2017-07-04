@@ -33,6 +33,7 @@ SOFTWARE.
   var PixiElement = phina.define('phina.pixi.PixiElement', {
     superClass: phina.app.Element,
     pixiObject: null,
+    _blendMode: 'source-over',
     init: function(options) {
       this.superInit();
       
@@ -579,6 +580,20 @@ SOFTWARE.
           // TODO: どうしようかな??
         }
       },
+      
+      blendMode: {
+        get: function() {
+          return this._blendMode;
+        },
+        
+        set: function(v) {
+          if (!(v in PixiElement.BLEND_MODES)) {
+            v = 'source-over';
+          }
+          this.pixiObject.blendMode = PixiElement.BLEND_MODES[v];
+          this._blendMode = v;
+        }
+      }
     },
     
     _static: {
@@ -595,11 +610,17 @@ SOFTWARE.
         height: 64,
         radius: 32,
         boundingType: 'rect',
-        
+        blendMode: 'source-over',
         visible: true,
         alpha: 1,
-        
       },
+      
+      BLEND_MODES: {
+        'source-over': PIXI.BLEND_MODES.NORMAL,
+        'screen': PIXI.BLEND_MODES.SCREEN,
+        'lighter': PIXI.BLEND_MODES.ADD,
+        'multiply': PIXI.BLEND_MODES.MULTIPLY,
+      }
     },
 
   });
