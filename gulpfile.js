@@ -4,6 +4,7 @@ var ghelper = require('gulp-helper');
 ghelper.require();
 
 var SCRIPTS = `
+pixiutil
 pixitexture
 pixielement
 pixisprite
