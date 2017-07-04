@@ -4,6 +4,7 @@ var ghelper = require('gulp-helper');
 ghelper.require();
 
 var SCRIPTS = `
+pixitexture
 pixielement
 
 `.split('\n').filter(script=>!!script.trim()).map(function(script){
