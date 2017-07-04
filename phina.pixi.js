@@ -37,7 +37,7 @@ SOFTWARE.
     init: function(options) {
       this.superInit();
       
-      this.$extend({}.$extend(PixiElement.defaults, options || {}));
+      this.$extend(PixiElement.defaults, options || {});
       this.pixiObject = this.pixiObject || new PIXI.Container();
     },
     
