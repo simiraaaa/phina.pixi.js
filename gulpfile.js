@@ -44,4 +44,8 @@ gulp.task('build', ['prebuild'], () => {
 
 });
 
-gulp.task('default', ['uglify']);
+gulp.task('watch', function() {
+  gulp.watch(['./src/*'], ['build']);
+});
+
+gulp.task('default', ['watch']);
