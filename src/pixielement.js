@@ -1,4 +1,4 @@
-(function(phina){
+(function(phina, PIXI){
 
   /**
    * @class phina.pixi.PixiElement
@@ -599,5 +599,4 @@
 
   });
   
-  
-}(phina));
+}(phina, PIXI));

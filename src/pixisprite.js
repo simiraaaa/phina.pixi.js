@@ -1,4 +1,4 @@
-(function(phina) {
+(function(phina, PIXI) {
   phina.define('phina.pixi.PixiSprite', {
     superClass: phina.pixi.PixiElement,
 
@@ -40,4 +40,5 @@
       },
     }
   });
-}(phina));
+  
+}(phina, PIXI));

@@ -1,4 +1,4 @@
-(function(phina){
+(function(phina, PIXI) {
   phina.define('phina.pixi.PixiTexture', {
     superClass: phina.asset.Asset,
 
@@ -35,4 +35,5 @@
   phina.asset.AssetManager.register('pixi', function(key, path) {
     return phina.pixi.PixiTexture().load(path);
   });
-}(phina));
+
+}(phina, PIXI));
