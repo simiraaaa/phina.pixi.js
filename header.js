@@ -24,6 +24,19 @@ SOFTWARE.
 @version <%= VERSION %>
 */
 
+if (typeof phina === 'undefined') {
+  throw new Error('phina.jsを先に読み込んでください。 Load phina.js before.');
+}
+
+if (typeof PIXI === 'undefined') {
+  throw new Error('pixi.jsを先に読み込んでください。 Load pixi.js before.');
+}
+
+if (PIXI.VERSION[0] !== '3') {
+  console.warn('pixi.js は v3 を使用してください。')
+}
+
 phina.pixi = {
   VERSION: '<%= VERSION %>',
 };
+
