@@ -5,6 +5,7 @@ ghelper.require();
 
 var SCRIPTS = `
 pixiutil
+pixirenderer
 pixitexture
 pixielement
 pixisprite
@@ -46,7 +47,7 @@ gulp.task('build', ['prebuild'], () => {
 
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['build'], function() {
   gulp.watch(['./src/*'], ['build']);
 });
 
