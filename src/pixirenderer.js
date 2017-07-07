@@ -21,7 +21,7 @@
   phina.define('phina.pixi.PixiRenderer', {
     pixiRenderer: null,
     init: function(options) {
-      this.pixiRenderer = PIXI.autoDetectRenderer({}.$extend(phina.pixi.pixiRenderer.defaults, options || {}));
+      this.pixiRenderer = PIXI.autoDetectRenderer({}.$extend(phina.pixi.PixiRenderer.defaults, options || {}));
     },
 
     /**
