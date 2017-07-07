@@ -626,8 +626,8 @@ phina.pixi = {
        * y座標値
        */
       originY: {
-        get: function()   { return this.pixiObject.anchor.y / this.height + 0.5; },
-        set: function(v)  { this.pixiObject.anchor.y = (v - 0.5) * this.height; }
+        get: function()   { return this.pixiObject.pivot.y / this.height + 0.5; },
+        set: function(v)  { this.pixiObject.pivot.y = (v - 0.5) * this.height; }
       },
       
       scale: {
