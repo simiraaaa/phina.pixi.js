@@ -114,7 +114,8 @@ phina.pixi = {
   phina.define('phina.pixi.PixiRenderer', {
     pixiRenderer: null,
     init: function(options) {
-      this.pixiRenderer = PIXI.autoDetectRenderer({}.$extend(phina.pixi.PixiRenderer.defaults, options || {}));
+      options = (options || {}).$safe(phina.pixi.PixiRenderer.defaults);
+      this.pixiRenderer = PIXI.autoDetectRenderer(options.width, options.height, options);
     },
 
     /**
