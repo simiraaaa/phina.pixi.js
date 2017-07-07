@@ -10,13 +10,13 @@
       var self = this;
       var texture = phina.asset.Texture();
       texture.load(this.src).then(function(texture) {
-        var canvas = document.createElement('canvas');
-        self.context = canvas.getContext('2d');
-        self.canvas = canvas;
-        canvas.width = texture.domElement.naturalWidth;
-        canvas.height = texture.domElement.naturalHeight;
-        self.context.drawImage(texture.domElement, 0, 0, canvas.width, canvas.height);
-        self.pixiTexture = PIXI.Texture.fromCanvas(canvas);
+        // var canvas = document.createElement('canvas');
+        // self.context = canvas.getContext('2d');
+        // self.canvas = canvas;
+        // canvas.width = texture.domElement.naturalWidth;
+        // canvas.height = texture.domElement.naturalHeight;
+        // self.context.drawImage(texture.domElement, 0, 0, canvas.width, canvas.height);
+        self.pixiTexture = new PIXI.Texture(new PIXI.BaseTexture(texture.domElement));
         self.phinaTexture = texture;
         resolve(self);
       });
