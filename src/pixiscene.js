@@ -7,7 +7,7 @@
   phina.define('phina.pixi.PixiScene', {
     superClass: phina.pixi.PixiElement,
     init: function(options) {
-      this.superInit({}.$extend(phina.pixi.PixiScene.defaults, options || {}));
+      this.superInit(options = {}.$extend(phina.pixi.PixiScene.defaults, options || {}));
 
       // this.backgroundColor = (options.backgroundColor) ? options.backgroundColor : null;
       
