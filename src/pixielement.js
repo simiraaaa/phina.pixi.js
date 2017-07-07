@@ -11,8 +11,8 @@
     init: function(options) {
       this.superInit();
       
+      this.pixiObject = options.pixiObject || new PIXI.Container();
       this.$extend(PixiElement.defaults, options || {});
-      this.pixiObject = this.pixiObject || new PIXI.Container();
     },
     
     
