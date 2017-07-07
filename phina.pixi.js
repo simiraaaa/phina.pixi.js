@@ -24,11 +24,194 @@ SOFTWARE.
 @version 0.0.1
 */
 
+if (typeof phina === 'undefined') {
+  throw new Error('phina.jsを先に読み込んでください。 Load phina.js before.');
+}
+
+if (typeof PIXI === 'undefined') {
+  throw new Error('pixi.jsを先に読み込んでください。 Load pixi.js before.');
+}
+
+if (PIXI.VERSION[0] !== '3') {
+  console.warn('pixi.js は v3 を使用してください。')
+}
+
 phina.pixi = {
   VERSION: '0.0.1',
 };
 
-(function(phina){
+
+(function(phina, PIXI) {
+
+  phina.define('phina.pixi.PixiUtil', {
+
+    init: function() {
+
+    },
+
+    _static: {
+      fitScreen: function(domElement, isEver) {
+        isEver = isEver === undefined ? true : isEver;
+
+        var _fitFunc = function() {
+          var s = domElement.style;
+          
+          s.position = "absolute";
+          s.margin = "auto";
+          s.left = "0px";
+          s.top  = "0px";
+          s.bottom = "0px";
+          s.right = "0px";
+
+          var rateWidth = domElement.width/window.innerWidth;
+          var rateHeight= domElement.height/window.innerHeight;
+          var rate = domElement.height/domElement.width;
+          
+          if (rateWidth > rateHeight) {
+            s.width  = Math.floor(innerWidth)+"px";
+            s.height = Math.floor(innerWidth*rate)+"px";
+          }
+          else {
+            s.width  = Math.floor(innerHeight/rate)+"px";
+            s.height = Math.floor(innerHeight)+"px";
+          }
+        };
+        
+        // 一度実行しておく
+        _fitFunc();
+
+        // リサイズ時のリスナとして登録しておく
+        if (isEver) {
+          phina.global.addEventListener("resize", _fitFunc, false);
+        }
+        return _fitFunc;
+      },
+    }
+
+  });
+
+}(phina, PIXI));
+(function(phina, PIXI) {
+
+  /**
+   * @class phina.pixi.PixiRenderer
+   * {@link http://pixijs.download/release/docs/PIXI.html#.autoDetectRenderer}
+   * @param {Object} (optional) options
+   * @param {Number} options.width = 640 幅
+   * @param {Number} options.height = 960 高さ
+   * @param {HTMLCanvasElement} options.view 描画対象のHTMLCanvasElement
+   * @param {Boolean} options.transparent = true 背景色を描画するか(透明にしたい場合true)
+   * @param {Boolean} options.antialias = false
+   * @param {Boolean} options.preserveDrawingBuffer = false
+   * @param {Object} options.backgroundColor = 0x000000 transparent が false の時に描画する背景色
+   * @param {Boolean} options.clearBeforeRender = false 描画をする際に現在の描画内容をクリアするか
+   * @param {Number} options.resolution = 1
+   * @param {Boolean} options.forceCanvas = false
+   * @param {Boolean} options.roundPixels = false
+   * @param {Boolean} options.forceFXAA = false
+   * @param {Boolean} options.legacy = false
+   */
+  phina.define('phina.pixi.PixiRenderer', {
+    pixiRenderer: null,
+    init: function(options) {
+      this.pixiRenderer = PIXI.autoDetectRenderer({}.$extend(phian.pixi.pixiRenderer.defaults, options || {}));
+    },
+
+    /**
+     * @param {phina.pixi.PixiElement} pixiElement
+     * @chainable
+     */
+    render: function(pixiElement) {
+      this.pixiRenderer.render(pixiElement.pixiObject);
+      return this;
+    },
+
+    /**
+     * @param {Number} (optional) color
+     */
+    clear: function(color) {
+      this.pixiRenderer.clear(color);
+      return this;
+    },
+
+    isWebGL: function() {
+      return this.pixiRenderer instanceof PIXI.WebGLRenderer;
+    },
+
+    renderChildren: function() {
+      throw new Error('PixiRenderer は renderChildren を実装していません。 Not implemented renderChildren.');
+    },
+    renderObject: function() {
+      throw new Error('PixiRenderer は renderObject を実装していません。 Not implemented renderObject.');
+    },
+
+    _accessor: {
+      domElement: {
+        get: function() { return this.pixiRenderer.view; },
+        set: function(v) { this.pixiRenderer.view = v; }
+      },
+    },
+
+    _static: {
+      defaults: {
+        width: 640,
+        height: 960,
+        
+        transparent: true,
+        antialias: false,
+        preserveDrawingBuffer: false,
+        backgroundColor: 0x000000,
+        clearBeforeRender: false,
+        resolution: 1,
+        forceCanvas: false,
+        roundPixels: false,
+        forceFXAA: false,
+        legacy: false,
+      }
+    }
+  });
+  
+}(phina, PIXI));
+(function(phina, PIXI) {
+  phina.define('phina.pixi.PixiTexture', {
+    superClass: phina.asset.Asset,
+
+    init: function() {
+      this.superInit();
+    },
+
+    _load: function(resolve) {
+      var self = this;
+      var texture = phina.asset.Texture();
+      texture.load(this.src).then(function(texture) {
+        self.pixiTexture = new PIXI.Texture(texture.domElement);
+        self.phinaTexture = texture;
+        resolve(self);
+      });
+    },
+
+    createFrame: function(x, y, width, height) {
+      if (typeof x === 'object') {
+        y = x.y;
+        width = x.width;
+        height = x.height;
+        x = x.x;
+      }
+      var newTexture = phina.pixi.PixiTexture();
+      newTexture.phinaTexture = this.phinaTexture;
+      newTexture.pixiTexture = new PIXI.Texture(this.pixiTexture.baseTexture, new PIXI.math.Rectangle(x, y, width, height));
+
+      return newTexture;
+    }
+    
+  });
+
+  phina.asset.AssetManager.register('pixi', function(key, path) {
+    return phina.pixi.PixiTexture().load(path);
+  });
+
+}(phina, PIXI));
+(function(phina, PIXI){
 
   /**
    * @class phina.pixi.PixiElement
@@ -41,8 +224,8 @@ phina.pixi = {
     init: function(options) {
       this.superInit();
       
-      this.$extend(PixiElement.defaults, options || {});
-      this.pixiObject = this.pixiObject || new PIXI.Container();
+      this.pixiObject = options.pixiObject || new PIXI.Container();
+      this.$extend((options || {}).$safe(PixiElement.defaults));
     },
     
     
@@ -629,5 +812,196 @@ phina.pixi = {
 
   });
   
+}(phina, PIXI));
+(function(phina, PIXI) {
+
+  /**
+   * @class phina.pixi.PixiScene
+   * 
+   */
+  phina.define('phina.pixi.PixiScene', {
+    superClass: phina.pixi.PixiElement,
+    init: function(options) {
+      this.superInit(options = (options || {}).$safe(phina.pixi.PixiScene.defaults));
+
+      // this.backgroundColor = (options.backgroundColor) ? options.backgroundColor : null;
+      
+      this.width = options.width;
+      this.height = options.height;
+      this.gridX = phina.util.Grid(options.width, 16);
+      this.gridY = phina.util.Grid(options.height, 16);
+
+      this.interactive = true;
+      this._overFlags = {};
+      this._touchFlags = {};
+    },
+
+
+    exit: function(nextLabel, nextArguments) {
+      if (!this.app) return ;
+
+      if (arguments.length > 0) {
+        if (typeof arguments[0] === 'object') {
+          nextLabel = arguments[0].nextLabel || this.nextLabel;
+          nextArguments = arguments[0];
+        }
+
+        this.nextLabel = nextLabel;
+        this.nextArguments = nextArguments;
+      }
+
+      this.app.popScene();
+
+      return this;
+    },
+
+    hitTest: function() {
+      return true;
+    },
+
+    _update: function() {
+      if (this.update) {
+        this.update();
+      }
+    },
+
+    _render: function() {
+    },
+
+    _static: {
+      defaults: {
+        width: 640,
+        height: 960,
+      },
+    }
+
+    
+  });
   
-}(phina));
+}(phina, PIXI));
+(function(phina, PIXI) {
+  phina.define('phina.pixi.PixiSprite', {
+    superClass: phina.pixi.PixiElement,
+
+    init: function(image, x, y, width, height) {
+      this.superInit({
+        pixiObject: new PIXI.Sprite(),
+      });
+
+      if (image) {
+        this.setImage(image, x, y, width, height);
+      }
+    },
+
+    setImage: function(image, x, y, width, height) {
+      if (typeof image === 'string') {
+        image = phina.asset.AssetManager.get('pixi', image);
+      }
+      if (typeof x === 'number') {
+        image = image.createFrame(x, y, width, height);
+      }
+      this._image = image;
+
+      this.pixiObject.texture = image.pixiTexture;
+
+      return this;
+    },
+
+    setFrame: function(x, y, width, height) {
+      this._image = this._image.createFrame(x, y, width, height);
+      return this;
+    },
+
+    _accessor: {
+      image: {
+        get: function() { return this._image; },
+        set: function(v) {
+          this.setImage(v);
+        }
+      },
+    }
+  });
+  
+}(phina, PIXI));
+(function(phina, PIXI) {
+
+  /**
+   * @class phina.pixi.PixiApp
+   * 
+   */
+  phina.define('phina.pixi.PixiApp', {
+    superClass: phina.display.DomApp,
+    init: function(options) {
+      options = (options || {}).$safe(phina.pixi.PixiApp.defaults);
+
+      if (!options.query && !options.domElement) {
+        options.domElement = document.createElement('canvas');
+        if (options.append) {
+          document.body.appendChild(options.domElement);
+        }
+      }
+      if(!options.runner && phina.isAndroid()) {
+        options.runner = phina.global.requestAnimationFrame;
+      }
+      this.superInit(options);
+
+      this.gridX = phina.util.Grid({
+        width: options.width,
+        columns: options.columns,
+      });
+      this.gridY = phina.util.Grid({
+        width: options.height,
+        columns: options.columns,
+      });
+
+      this.renderer = phina.pixi.PixiRenderer({
+        view: this.domElement,
+        width: options.width,
+        height: options.height
+      });
+      
+
+      // this.backgroundColor = (options.backgroundColor !== undefined) ? options.backgroundColor : 'white';
+
+      this.replaceScene(phina.pixi.PixiScene({
+        width: options.width,
+        height: options.height,
+      }));
+
+      if (options.fit) {
+        this.fitScreen();
+      }
+
+      if (options.pixelated) {
+        // チラつき防止
+        // https://drafts.csswg.org/css-images/#the-image-rendering
+        this.domElement.style.imageRendering = 'pixelated';
+      }
+    },
+
+    _draw: function() {
+      this.renderer.clear(/* this.backgroundColor */);
+      this._scenes.forEach(function(scene) {
+        scene.pixiObject && this.renderer.render(scene);
+      }, this);
+    },
+
+    fitScreen: function() {
+      phina.pixi.PixiUtil.fitScreen(this.domElement);
+    },
+
+    _static: {
+      defaults: {
+        width: 640,
+        height: 960,
+        columns: 12,
+        fit: true,
+        append: true,
+      },
+    },
+
+
+    
+  });
+  
+}(phina, PIXI));
