@@ -22,7 +22,7 @@
       this._image = image;
 
       this.pixiObject.texture = image.pixiTexture;
-
+      this.pixiObject.anchor.set(0.5, 0.5);
       return this;
     },
 
@@ -40,5 +40,5 @@
       },
     }
   });
-  
+
 }(phina, PIXI));

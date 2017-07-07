@@ -410,8 +410,8 @@ phina.pixi = {
      * @param {Number} y
      */
     setOrigin: function(x, y) {
-      this.pixiObject.anchor.x = x;
-      this.pixiObject.anchor.y = y;
+      this.pixiObject.pivot.x = (x - 0.5) * this.width;
+      this.pixiObject.pivot.y = (y - 0.5) * this.height;
       return this;
     },
     
@@ -590,9 +590,9 @@ phina.pixi = {
         set: function(v)  { this.pixiObject.position.y = v; }
       },
       
-      origin: {
-        get: function() { return this.pixiObject.anchor; },
-        set: function(v) { this.pixiObject.anchor = v; },
+      pivot: {
+        get: function() { return this.pixiObject.pivot; },
+        set: function(v) { this.pixiObject.pivot = v; },
       },
 
       anchor: {
@@ -600,13 +600,25 @@ phina.pixi = {
         set: function(v) { this.pixiObject.anchor = v; },
       },
 
+      origin: {
+        get: function() {
+          console.warn('PixiElement では origin は非推奨です。originX, originYを使用してください。');
+          return phina.geom.Vector2(this.originX, this.originY);
+        },
+        set: function(v) {
+          console.warn('PixiElement では origin は非推奨です。originX, originY, もしくは setOrigin() を使用してください。');
+          this.originX = v.x;
+          this.originY = v.y;
+        },
+      },
+
       /**
        * @property    originX
        * x座標値
        */
       originX: {
-        get: function()   { return this.pixiObject.anchor.x; },
-        set: function(v)  { this.pixiObject.anchor.x = v; }
+        get: function()   { return this.pixiObject.pivot.x / this.width + 0.5; },
+        set: function(v)  { this.pixiObject.pivot.x = (v - 0.5) * this.width; }
       },
       
       /**
@@ -614,8 +626,8 @@ phina.pixi = {
        * y座標値
        */
       originY: {
-        get: function()   { return this.pixiObject.anchor.y; },
-        set: function(v)  { this.pixiObject.anchor.y = v; }
+        get: function()   { return this.pixiObject.anchor.y / this.height + 0.5; },
+        set: function(v)  { this.pixiObject.anchor.y = (v - 0.5) * this.height; }
       },
       
       scale: {
@@ -686,11 +698,11 @@ phina.pixi = {
       top: {
         get: function()   {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.y - pixiObject.height*pixiObject.anchor.y;
+          return pixiObject.position.y - pixiObject.pivot.y - this.height/2 ;
         },
         set: function(v)  {
           var pixi = this.pixiObject;
-          pixiObject.position.y = v + pixiObject.height*pixiObject.anchor.y;
+          pixiObject.position.y = v + pixiObject.pivot.y + this.height/2;
         },
       },
    
@@ -701,11 +713,11 @@ phina.pixi = {
       right: {
         get: function()   {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.x + pixiObject.width*(1-pixiObject.anchor.x);
+          return pixiObject.position.x + pixiObject.pivot.x + this.width/2;
         },
         set: function(v)  {
           var pixiObject = this.pixiObject;
-          pixiObject.position.x = v - pixiObject.width*(1-pixiObject.anchor.x);
+          pixiObject.position.x = v - pixiObject.pivot.x - this.width/2;
           
         },
       },
@@ -717,11 +729,11 @@ phina.pixi = {
       bottom: {
         get: function()   {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.y + pixiObject.height*(1-pixiObject.anchor.y);
+          return pixiObject.position.y + pixiObject.pivot.y + this.height/2;
         },
         set: function(v)  {
           var pixiObject = this.pixiObject;
-          pixiObject.position.y = v - pixiObject.height*(1-pixiObject.anchor.y);
+          pixiObject.position.y = v - pixiObject.pivot.y - this.height/2;
         },
       },
    
@@ -732,11 +744,11 @@ phina.pixi = {
       left: {
         get: function()   {
           var pixiObject = this.pixiObject;
-          return this.x - pixiObject.width*pixiObject.anchor.x;
+          return pixiObject.position.x + pixiObject.pivot.x - this.width / 2;
         },
         set: function(v)  {
           var pixiObject = this.pixiObject;
-          pixiObject.position.x = v + pixiObject.width*pixiObject.anchor.x;
+          pixiObject.position.x = v - pixiObject.pivot.x + this.width / 2;
         },
       },
 
@@ -747,7 +759,7 @@ phina.pixi = {
       centerX: {
         get: function()   {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.x + pixiObject.width/2 - pixiObject.width*pixiObject.anchor.x;
+          return pixiObject.position.x + pixiObject.pivot.x;
         },
         set: function(v)  {
           // TODO: どうしようかな??
@@ -761,7 +773,7 @@ phina.pixi = {
       centerY: {
         get: function()   {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.y + pixiObject.height/2 - pixiObject.height*pixiObject.anchor.y;
+          return pixiObject.position.y + pixiObject.pivot.y;
         },
         set: function(v)  {
           // TODO: どうしようかな??
@@ -903,7 +915,7 @@ phina.pixi = {
       this._image = image;
 
       this.pixiObject.texture = image.pixiTexture;
-
+      this.pixiObject.anchor.set(0.5, 0.5);
       return this;
     },
 
@@ -921,7 +933,7 @@ phina.pixi = {
       },
     }
   });
-  
+
 }(phina, PIXI));
 (function(phina, PIXI) {
 
