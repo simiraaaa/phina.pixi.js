@@ -12,7 +12,7 @@
       this.superInit();
       
       this.pixiObject = options.pixiObject || new PIXI.Container();
-      this.$extend(PixiElement.defaults, options || {});
+      this.$extend({}.$extend(PixiElement.defaults, options || {}));
     },
     
     
