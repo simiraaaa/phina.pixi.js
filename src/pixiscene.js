@@ -1,0 +1,66 @@
+(function(phina, PIXI) {
+
+  /**
+   * @class phina.pixi.PixiScene
+   * 
+   */
+  phina.define('phina.pixi.PixiScene', {
+    superClass: phina.pixi.PixiElement,
+    init: function(options) {
+      this.superInit({}.$extend(phina.pixi.PixiScene.defaults, options || {}));
+
+      // this.backgroundColor = (options.backgroundColor) ? options.backgroundColor : null;
+      
+      this.width = options.width;
+      this.height = options.height;
+      this.gridX = phina.util.Grid(options.width, 16);
+      this.gridY = phina.util.Grid(options.height, 16);
+
+      this.interactive = true;
+      this._overFlags = {};
+      this._touchFlags = {};
+    },
+
+
+    exit: function(nextLabel, nextArguments) {
+      if (!this.app) return ;
+
+      if (arguments.length > 0) {
+        if (typeof arguments[0] === 'object') {
+          nextLabel = arguments[0].nextLabel || this.nextLabel;
+          nextArguments = arguments[0];
+        }
+
+        this.nextLabel = nextLabel;
+        this.nextArguments = nextArguments;
+      }
+
+      this.app.popScene();
+
+      return this;
+    },
+
+    hitTest: function() {
+      return true;
+    },
+
+    _update: function() {
+      if (this.update) {
+        this.update();
+      }
+    },
+
+    _render: function() {
+    },
+
+    _static: {
+      defaults: {
+        width: 640,
+        height: 960,
+      },
+    }
+
+    
+  });
+  
+}(phina, PIXI));
