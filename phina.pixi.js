@@ -206,7 +206,7 @@ phina.pixi = {
     
   });
 
-  phina.asset.AssetManager.register('pixi', function(key, path) {
+  phina.asset.AssetLoader.register('pixi', function(key, path) {
     return phina.pixi.PixiTexture().load(path);
   });
 
