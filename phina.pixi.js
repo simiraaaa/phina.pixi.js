@@ -206,9 +206,9 @@ phina.pixi = {
     
   });
 
-  phina.asset.AssetLoader.register('pixi', function(key, path) {
+  phina.asset.AssetLoader.assetLoadFunctions.pixi = function(key, path) {
     return phina.pixi.PixiTexture().load(path);
-  });
+  };
 
 }(phina, PIXI));
 (function(phina, PIXI){
