@@ -11,7 +11,7 @@
    * @param {Boolean} options.antialias = false
    * @param {Boolean} options.preserveDrawingBuffer = false
    * @param {Object} options.backgroundColor = 0x000000 transparent が false の時に描画する背景色
-   * @param {Boolean} options.clearBeforeRender = false 描画をする際に現在の描画内容をクリアするか
+   * @param {Boolean} options.clearBeforeRender = true 描画をする際に現在の描画内容をクリアするか
    * @param {Number} options.resolution = 1
    * @param {Boolean} options.forceCanvas = false
    * @param {Boolean} options.roundPixels = false
@@ -35,10 +35,11 @@
 
     /**
      * @param {Number} (optional) color
+     * @deprecated
      */
     clear: function(color) {
-      this.pixiRenderer.clear(color);
-      return this;
+      // this.pixiRenderer.clear(color);
+      // return this;
     },
 
     isWebGL: function() {
@@ -68,7 +69,7 @@
         antialias: false,
         preserveDrawingBuffer: false,
         backgroundColor: 0x000000,
-        clearBeforeRender: false,
+        clearBeforeRender: true,
         resolution: 1,
         forceCanvas: false,
         roundPixels: false,
