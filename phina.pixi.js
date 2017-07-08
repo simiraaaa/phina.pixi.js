@@ -954,6 +954,8 @@ phina.pixi = {
 
       this.pixiObject.texture = image.pixiTexture;
       this.pixiObject.anchor.set(0.5, 0.5);
+      this.width = image.pixiTexture.width;
+      this.height = image.pixiTexture.height;
       return this;
     },
 
