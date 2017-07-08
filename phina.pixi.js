@@ -683,8 +683,8 @@ phina.pixi = {
           return this._scale.x;
         },
         set: function(v)  {
-          this._scale.x = v;
           this.pixiObject.width = this.width * v;
+          this._scale.x = v;
         }
       },
       
@@ -697,8 +697,8 @@ phina.pixi = {
           return this._scale.y;
         },
         set: function(v)  {
-          this._scale.y = v;
           this.pixiObject.height = this.height * v;
+          this._scale.y = v;
         }
       },
       
