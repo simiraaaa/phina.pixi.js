@@ -16,6 +16,9 @@
       
       this.pixiObject = options.pixiObject || new PIXI.Container();
       this.boundingType = options.boundingType;
+      
+      this._scale = phina.geom.Vector2(1, 1);
+      
       if(this.boundingType === 'rect') {
         this.width = options.width;
         this.height = options.height;
@@ -28,7 +31,6 @@
       
       this.alpha = options.alpha;
       
-      this._scale = phina.geom.Vector2(1, 1);
       this.scaleX = options.scaleX;
       this.scaleY = options.scaleY;
       this.rotation = options.rotation;
