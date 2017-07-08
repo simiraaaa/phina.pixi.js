@@ -229,10 +229,12 @@ phina.pixi = {
     superClass: phina.app.Element,
     pixiObject: null,
     _blendMode: 'source-over',
+    boundingType: 'rect',
     init: function(options) {
       this.superInit();
       
       this.pixiObject = options.pixiObject || new PIXI.Container();
+      this.boundingType = options.boundingType;
       this.$extend((options || {}).$safe(PixiElement.defaults));
     },
     
