@@ -184,16 +184,8 @@ phina.pixi = {
 
     _load: function(resolve) {
       var self = this;
-      var texture = phina.asset.Texture();
-      texture.load(this.src).then(function(texture) {
-        // var canvas = document.createElement('canvas');
-        // self.context = canvas.getContext('2d');
-        // self.canvas = canvas;
-        // canvas.width = texture.domElement.naturalWidth;
-        // canvas.height = texture.domElement.naturalHeight;
-        // self.context.drawImage(texture.domElement, 0, 0, canvas.width, canvas.height);
-        self.pixiTexture = new PIXI.Texture(new PIXI.BaseTexture(texture.domElement));
-        self.phinaTexture = texture;
+      PIXI.loader.add(this.key, this.src).load(function(loader, resources) {
+        self.pixiTexture = resources[self.key].texture;
         resolve(self);
       });
     },
@@ -210,12 +202,17 @@ phina.pixi = {
       newTexture.pixiTexture = new PIXI.Texture(this.pixiTexture.baseTexture, new PIXI.math.Rectangle(x, y, width, height));
 
       return newTexture;
+    },
+    
+    setKey: function(key) {
+      this.key = key;
+      return this;
     }
     
   });
 
   phina.asset.AssetLoader.register('pixi', function(key, path) {
-    return phina.pixi.PixiTexture().load(path);
+    return phina.pixi.PixiTexture().setKey(key).load(path);
   });
 
 }(phina, PIXI));
