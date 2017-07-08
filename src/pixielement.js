@@ -12,6 +12,8 @@
     init: function(options) {
       this.superInit();
       
+      options = (options || {}).$safe(PixiElement.defaults);
+      
       this.pixiObject = options.pixiObject || new PIXI.Container();
       this.boundingType = options.boundingType;
       if(this.boundingType === 'rect') {
