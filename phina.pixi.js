@@ -235,7 +235,26 @@ phina.pixi = {
       
       this.pixiObject = options.pixiObject || new PIXI.Container();
       this.boundingType = options.boundingType;
-      this.$extend((options || {}).$safe(PixiElement.defaults));
+      if(this.boundingType === 'rect') {
+        this.width = options.width;
+        this.height = options.height;
+      }
+      else {
+        this.radius = options.radius;
+      }
+      this.x = options.x;
+      this.y = options.y;
+      
+      this.alpha = options.alpha;
+      
+      this.scaleX = options.scaleX;
+      this.scaleY = options.scaleY;
+      this.rotation = options.rotation;
+      this.originX = options.originX;
+      this.originY = options.originY;
+      
+      this.blendMode = options.blendMode;
+      this.visible = options.visible;
     },
     
     
@@ -801,6 +820,16 @@ phina.pixi = {
           }
           this.pixiObject.blendMode = PixiElement.BLEND_MODES[v];
           this._blendMode = v;
+        }
+      },
+      
+      alpha: {
+        get: function() {
+          return this.pixiObject.alpha;
+        },
+        
+        set: function(v) {
+          this.pixiObject.alpha = v;
         }
       }
     },
