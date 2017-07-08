@@ -28,6 +28,7 @@
       
       this.alpha = options.alpha;
       
+      this._scale = phina.geom.Vector2(1, 1);
       this.scaleX = options.scaleX;
       this.scaleY = options.scaleY;
       this.rotation = options.rotation;
@@ -36,6 +37,7 @@
       
       this.blendMode = options.blendMode;
       this.visible = options.visible;
+      
     },
     
     
@@ -205,11 +207,11 @@
      * @param {Number} y
      */
     setScale: function(x, y) {
-      this.pixiObject.scale.x = x;
+      this.scaleX = x;
       if (arguments.length <= 1) {
-          this.pixiObject.scale.y = x;
+        this.scaleY = x;
       } else {
-          this.pixiObject.scale.y = y;
+        this.scaleY = y;
       }
       return this;
     },
@@ -286,12 +288,12 @@
       var world = this._worldMatrix;
 
       // ローカルの行列を計算
-      local.m00 = this._cr * this.scale.x;
-      local.m01 =-this._sr * this.scale.y;
-      local.m10 = this._sr * this.scale.x;
-      local.m11 = this._cr * this.scale.y;
-      local.m02 = this.position.x;
-      local.m12 = this.position.y;
+      local.m00 = this._cr * this._scale.x;
+      local.m01 =-this._sr * this._scale.y;
+      local.m10 = this._sr * this._scale.x;
+      local.m11 = this._cr * this._scale.y;
+      local.m02 = this.x;
+      local.m12 = this.y;
 
       // cache
       var a00 = local.m00; var a01 = local.m01; var a02 = local.m02;
@@ -441,8 +443,15 @@
       },
       
       scale: {
-        get: function() { return this.pixiObject.scale; },
-        set: function(s) { this.pixiObject.scale = s; },
+        get: function() {
+          console.warn('scale プロパティは非推奨です。')
+          return this._scale;
+          
+        },
+        set: function(s) {
+          console.warn('scale プロパティは非推奨です。setScale()を使用してください')
+          this.setScale(s.x, s.y);
+        },
       },
       
       /**
@@ -450,8 +459,13 @@
        * スケールX値
        */
       scaleX: {
-        get: function()   { return this.pixiObject.scale.x; },
-        set: function(v)  { this.pixiObject.scale.x = v; }
+        get: function()   {
+          return this._scale.x;
+        },
+        set: function(v)  {
+          this._scale.x = v;
+          this.pixiObject.width = this.width * v;
+        }
       },
       
       /**
@@ -459,8 +473,13 @@
        * スケールY値
        */
       scaleY: {
-        get: function()   { return this.pixiObject.scale.y; },
-        set: function(v)  { this.pixiObject.scale.y = v; }
+        get: function()   {
+          return this._scale.y;
+        },
+        set: function(v)  {
+          this._scale.y = v;
+          this.pixiObject.height = this.height * v;
+        }
       },
       
       /**
@@ -470,9 +489,9 @@
       width: {
         get: function()   {
           return (this.boundingType === 'rect') ?
-            this.pixiObject.width : this._diameter;
+            this.pixiObject.width / this._scale.x : this._diameter;
         },
-        set: function(v)  { this.pixiObject.width = v; }
+        set: function(v)  { this.pixiObject.width = v * this._scale.x; }
       },
       /**
        * @property    height
@@ -481,9 +500,9 @@
       height: {
         get: function()   {
           return (this.boundingType === 'rect') ?
-            this.pixiObject.height : this._diameter;
+            this.pixiObject.height / this._scale.y : this._diameter;
         },
-        set: function(v)  { this.pixiObject.height = v; }
+        set: function(v)  { this.pixiObject.height = v * this._scale.y; }
       },
 
       /**
@@ -497,7 +516,9 @@
         },
         set: function(v)  {
           this._radius = v;
-          this._diameter = this.pixiObject.width = this.pixiObject.height = v*2;
+          this._diameter = v*2;
+          this.pixiObject.width = this._diameter * this._scale.x;
+          this.pixiObject.height = this._diameter * this._scale.y;
         },
       },
       
