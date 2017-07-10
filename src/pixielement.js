@@ -21,14 +21,11 @@
       
       this._scale = phina.geom.Vector2(1, 1);
       this._origin = phina.geom.Vector2(0.5, 0.5);
-      
-      if(this.boundingType === 'rect') {
-        this.width = options.width;
-        this.height = options.height;
-      }
-      else {
-        this.radius = options.radius;
-      }
+    
+      this.width = options.width;
+      this.height = options.height;
+      this.radius = options.radius;
+
       this.x = options.x;
       this.y = options.y;
       
@@ -48,7 +45,7 @@
 
       this.interactive = options.interactive;
       this._overFlags = {};
-      this._touchFlags = {};      
+      this._touchFlags = {};
     },
     
     
@@ -324,32 +321,29 @@
       return this;
     },
 
-    // /**
-    //  * 表示/非表示をセット
-    //  */
-    // setVisible: function(flag) {
-    //   throw new Error('visible は未実装です。');
-    //   this.visible = flag;
-    //   return this;
-    // },
+    /**
+     * 表示/非表示をセット
+     */
+    setVisible: function(flag) {
+      this.pixiObject.visible = flag;
+      return this;
+    },
 
-    // /**
-    //  * 表示
-    //  */
-    // show: function() {
-    //   throw new Error('visible は未実装です。');
-    //   this.visible = true;
-    //   return this;
-    // },
+    /**
+     * 表示
+     */
+    show: function() {
+      this.pixiObject.visible = true;
+      return this;
+    },
 
-    // /**
-    //  * 非表示
-    //  */
-    // hide: function() {
-    //   throw new Error('visible は未実装です。');
-    //   this.visible = false;
-    //   return this;
-    // },
+    /**
+     * 非表示
+     */
+    hide: function() {
+      this.pixiObject.visible = false;
+      return this;
+    },
 
     /**
      * @private
@@ -547,8 +541,10 @@
         set: function(v) {
           this._radius = v;
           this._diameter = v*2;
-          this.pixiObject.width = this._diameter * this._scale.x;
-          this.pixiObject.height = this._diameter * this._scale.y;
+          if(this.boundingType === 'circle') {
+            this.pixiObject.width = this._diameter * this._scale.x;
+            this.pixiObject.height = this._diameter * this._scale.y;
+          }
         },
       },
       
@@ -663,6 +659,11 @@
         set: function(v) {
           this.pixiObject.alpha = v;
         }
+      },
+
+      visible: {
+        get: function() { return this.pixiObject.visible; },
+        set: function(v) { this.pixiObject.visible = v; },
       }
     },
     
