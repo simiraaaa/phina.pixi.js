@@ -34,9 +34,33 @@
         width: 100%;
         height: 100%;
       }
+
+      #loading {
+        width: 100%;
+        height: 100vh;
+        background-color: black;
+        opacity: 0.5;
+        position: fixed;
+        left: 0;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      #loading span{
+        font-size: 5vw;
+        color: white;
+        opacity: 1;
+      }
+      
     </style>
   </head>
   <body>
+    
+    <div id="loading"><span>loading...</span></div>
     <div class="flex between">
       <div class="side" id="side"></div>
       <div class="test" id="test">
