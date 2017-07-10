@@ -11,8 +11,6 @@
 
       // this.backgroundColor = (options.backgroundColor) ? options.backgroundColor : null;
       
-      this.width = options.width;
-      this.height = options.height;
       this.gridX = phina.util.Grid(options.width, 16);
       this.gridY = phina.util.Grid(options.height, 16);
 
