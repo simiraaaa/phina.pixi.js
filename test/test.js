@@ -59,8 +59,9 @@ var TEST_MAP = {
     init:function() {
       this.superInit();
       phina.pixi.PixiSprite('tomapiko').addChildTo(this).setPosition(300, 400);
-      seeMessage();
-    }
+    },
+
+    see: true,
   },
 
   hitTestRect: {
@@ -133,9 +134,78 @@ var TEST_MAP = {
         this.fx *= 0.95;
         this.fy *= 0.95;
       };
-      controllMessage();
+    },
+
+    controll: true,
+  },
+
+  Sprite_origin: {
+    init: function (){
+      this.superInit();
+      var Sprite = phina.pixi.PixiSprite;
+      var topleft = Sprite('tomapiko').addChildTo(this).setOrigin(0, 0);
+      var bottomright = Sprite('tomapiko').addChildTo(this).setOrigin(1, 1).setPosition(this.width, this.height);
+      var temp = false;
+      var flag = false;
+      console.assert(temp = this.width === bottomright.right, 'right');
+      flag = flag || !temp;
+      console.assert(temp = this.height === bottomright.bottom, 'bottom');
+      flag = flag || !temp;
+      console.assert(temp = 0 === topleft.top, 'top');
+      flag = flag || !temp;
+      console.assert(temp = 0 === topleft.left, 'left');
+      assertMessage(flag);
     }
   },
+
+  Sprite_rect: {
+    init: function() {
+      this.superInit();
+      var Sprite = phina.pixi.PixiSprite;
+      var sp = Sprite('tomapiko').addChildTo(this);
+      var originStep = 0.5;
+      var originStart = -5;
+      var originEnd = 5;
+      var xStep = this.width / 10;
+      var xStart = -this.width;
+      var xEnd = this.width * 2;
+      
+      var yStep = this.height / 10;
+      var yStart = -this.height;
+      var yEnd = this.height * 2;
+      
+      var temp = false;
+      var flag = false;
+      
+      var rect = phina.geom.Rect();
+      rect.width = sp.width;
+      rect.height = sp.height;
+      var props = 'left,right,top,bottom,centerX,centerY'.split(',');
+      Array.range(originStart, originEnd, originStep).forEach(function(i) {
+        sp.setOrigin(i);
+        Array.range(xStart, xEnd, xStep).forEach(function(x) {
+          sp.x = x;
+          rect.x = x - rect.width * i;
+          Array.range(yStart, yEnd, yStep).forEach(function(y){
+            sp.y = y;
+            rect.y = y - rect.height * i;
+            props.forEach(function(p){
+              // 誤差調整
+              var rp = rect[p];
+              var spp = sp[p];
+              rp = Math.round(rp);
+              spp = Math.round(spp);
+              console.assert(temp = rp === spp, p + ':' + rp + ', ' + spp);
+              flag = flag || !temp;
+            });
+          });
+        });
+      });
+
+      assertMessage(flag);
+      if(!flag) sp.setPosition(320, 480).setOrigin(0.5);
+    }
+  }
 
 };
 
@@ -157,7 +227,7 @@ if(location.href.indexOf('index.html') === -1) {
     app.pushScene(phina.game.LoadingScene({assets: ASSETS}).on('loaded', function(){
       isLoading = false;
       if(window !== parent) {
-        parent.postMessage('loaded', '*');
+        post('loaded');
       }
     }));
   });
@@ -171,6 +241,7 @@ else {
 
   var button = document.createElement('button');
   button.textContent = 'ALL';
+  button.id = 'b_ALL';
   button.style.width = '100%';
   button.onclick = function() {
     var f = document.getElementById('frame');
@@ -183,11 +254,21 @@ else {
     var button = document.createElement('button');
     button.textContent = k;
     button.id = 'b_' + k;
+    button.dataset.hash = k;
     button.style.width = '100%';
+    if(TEST_MAP[k].see) {
+      button.style.backgroundColor = 'navy';
+      button.style.color = 'white';
+      button.textContent = 'see: ' + k;
+    }
+    if(TEST_MAP[k].controll) {
+      button.style.backgroundColor = 'orange';
+      button.textContent = 'controll: ' + k;
+    }
     button.onclick = function() {
       var f = document.getElementById('frame');
       var w = f.contentWindow;
-      location.hash = w.location.hash = this.textContent;
+      location.hash = w.location.hash = this.dataset.hash;
       w.replaceSceneByHash();
     };
 
@@ -195,18 +276,39 @@ else {
   }
 
   onmessage = function(e) {
-    if(e.data === 'loaded'){
+    var data = e.data;
+    var type = data.type;
+    var id = data.id;
+    var b = document.getElementById('b_' + id);
+    if(!b) {
+      b = {style: {}, dataset: {}};
+    }
+    var style = b.style;
+
+    var beforeText = '';
+    var afterText = '';
+
+    if(data === 'loaded'){
       hideLoading();
       var f = document.getElementById('frame');
       var w = f.contentWindow;
+      document.getElementById('b_ALL').click();
+      w.alertFlag = true;
+
       w.location.hash = location.hash;
       w.replaceSceneByHash();
     }
-    else if (e.data.id){
-      var b = document.getElementById('b_' + e.data.id);
-      if(b) {
-        b.style.backgroundColor = e.data.success ? 'rgb(180, 245, 240)' : 'pink';
-      }
+    else if (type === 'assert'){
+      style.backgroundColor = data.success ? 'rgb(180, 245, 240)' : 'pink';
+      afterText = data.success ? ' (success)' : '(failure)';
+    }
+
+    if(beforeText) {
+      b.textContent = beforeText + b.dataset.hash;
+    }
+
+    if(afterText) {
+      b.textContent = b.dataset.hash + afterText;
     }
   };
 
@@ -228,14 +330,21 @@ function testAll(){
 }
 
 function replaceSceneByHash(){
-  if((location.hash.slice(1)) in TEST_MAP) {
-    app.replaceScene(phina.using('TEST_' + location.hash.slice(1))());
+  if(getId() in TEST_MAP) {
+    app.replaceScene(phina.using('TEST_' + getId())());
   }
 }
+
+var alertFlag = false;
+
 function assertMessage(flag) {
-  var title = location.hash.slice(1);
-  parent.postMessage({id: title, success: !flag}, '*');
-  if(flag) {
+  var title = getId();
+  post({
+    id: title,
+    success: !flag,
+    type: 'assert',
+  });
+  if(flag && alertFlag) {
     alert(title + '\nテストに失敗しました。\n開発者ツールを確認して下さい。');
   }
   else {
@@ -243,9 +352,25 @@ function assertMessage(flag) {
   }
 }
 
+function getId() {
+  return location.hash.slice(1);
+}
+
 function seeMessage() {
   console.log(location.hash + ': このテストは目視で確認してください。');
+  post({
+    id: getId(),
+    type: 'see'
+  });
 }
 function controllMessage() {
   console.log(location.hash + ': このテストは操作して確認してください。');
+  post({
+    id: getId(),
+    type: 'controll'
+  });
+}
+
+function post(data) {
+  return parent.postMessage(data, '*');
 }
