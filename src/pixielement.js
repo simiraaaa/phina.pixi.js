@@ -9,6 +9,8 @@
     pixiObject: null,
     _blendMode: 'source-over',
     boundingType: 'rect',
+    _scale: null,
+    _origin: null,
     init: function(options) {
       this.superInit();
       
@@ -18,6 +20,7 @@
       this.boundingType = options.boundingType;
       
       this._scale = phina.geom.Vector2(1, 1);
+      this._origin = phina.geom.Vector2(0.5, 0.5);
       
       if(this.boundingType === 'rect') {
         this.width = options.width;
@@ -40,6 +43,12 @@
       this.blendMode = options.blendMode;
       this.visible = options.visible;
       
+      this._matrix = phina.geom.Matrix33().identity();
+      this._worldMatrix = phina.geom.Matrix33().identity();
+
+      this.interactive = options.interactive;
+      this._overFlags = {};
+      this._touchFlags = {};      
     },
     
     
@@ -417,7 +426,7 @@
       origin: {
         get: function() {
           console.warn('PixiElement では origin は非推奨です。originX, originYを使用してください。');
-          return phina.geom.Vector2(this.originX, this.originY);
+          return this._origin;
         },
         set: function(v) {
           console.warn('PixiElement では origin は非推奨です。originX, originY, もしくは setOrigin() を使用してください。');
@@ -431,8 +440,13 @@
        * x座標値
        */
       originX: {
-        get: function()   { return this.pixiObject.pivot.x / this.width + 0.5; },
-        set: function(v)  { this.pixiObject.pivot.x = (v - 0.5) * this.width; }
+        get: function()   {
+          return this._origin.x;
+        },
+        set: function(v)  {
+          this._origin.x = v;
+          this.pixiObject.pivot.x = (v - 0.5) * this.width;
+        }
       },
       
       /**
@@ -440,8 +454,13 @@
        * y座標値
        */
       originY: {
-        get: function()   { return this.pixiObject.pivot.y / this.height + 0.5; },
-        set: function(v)  { this.pixiObject.pivot.y = (v - 0.5) * this.height; }
+        get: function()   {
+          return this._origin.y;
+        },
+        set: function(v)  {
+          this._origin.y = v;
+          this.pixiObject.pivot.y = (v - 0.5) * this.height;
+        }
       },
       
       scale: {
@@ -465,8 +484,9 @@
           return this._scale.x;
         },
         set: function(v)  {
-          this.pixiObject.width = this.width * v;
+          var prev = this.width;
           this._scale.x = v;
+          this.width = prev;
         }
       },
       
@@ -479,8 +499,9 @@
           return this._scale.y;
         },
         set: function(v)  {
-          this.pixiObject.height = this.height * v;
+          var prev = this.height;
           this._scale.y = v;
+          this.height = prev;
         }
       },
       
@@ -493,7 +514,10 @@
           return (this.boundingType === 'rect') ?
             this.pixiObject.width / this._scale.x : this._diameter;
         },
-        set: function(v)  { this.pixiObject.width = v * this._scale.x; }
+        set: function(v)  {
+          this.pixiObject.width = v * this._scale.x;
+          this.pixiObject.pivot.x = (this._origin.x - 0.5) * v;
+        }
       },
       /**
        * @property    height
@@ -504,8 +528,10 @@
           return (this.boundingType === 'rect') ?
             this.pixiObject.height / this._scale.y : this._diameter;
         },
-        set: function(v)  { this.pixiObject.height = v * this._scale.y; }
-      },
+        set: function(v)  {
+          this.pixiObject.height = v * this._scale.y;
+          this.pixiObject.pivot.y = (this._origin.y - 0.5) * v;
+        },
 
       /**
        * @property    radius
@@ -655,6 +681,7 @@
         blendMode: 'source-over',
         visible: true,
         alpha: 1,
+        interactive: false,
       },
       
       BLEND_MODES: {

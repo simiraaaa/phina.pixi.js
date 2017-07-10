@@ -227,6 +227,8 @@ phina.pixi = {
     pixiObject: null,
     _blendMode: 'source-over',
     boundingType: 'rect',
+    _scale: null,
+    _origin: null,
     init: function(options) {
       this.superInit();
       
@@ -236,6 +238,7 @@ phina.pixi = {
       this.boundingType = options.boundingType;
       
       this._scale = phina.geom.Vector2(1, 1);
+      this._origin = phina.geom.Vector2(0.5, 0.5);
       
       if(this.boundingType === 'rect') {
         this.width = options.width;
@@ -258,6 +261,12 @@ phina.pixi = {
       this.blendMode = options.blendMode;
       this.visible = options.visible;
       
+      this._matrix = phina.geom.Matrix33().identity();
+      this._worldMatrix = phina.geom.Matrix33().identity();
+
+      this.interactive = options.interactive;
+      this._overFlags = {};
+      this._touchFlags = {};      
     },
     
     
@@ -683,8 +692,9 @@ phina.pixi = {
           return this._scale.x;
         },
         set: function(v)  {
-          this.pixiObject.width = this.width * v;
+          var prev = this.width;
           this._scale.x = v;
+          this.width = prev;
         }
       },
       
@@ -697,8 +707,9 @@ phina.pixi = {
           return this._scale.y;
         },
         set: function(v)  {
-          this.pixiObject.height = this.height * v;
+          var prev = this.height;
           this._scale.y = v;
+          this.height = prev;
         }
       },
       
@@ -873,6 +884,7 @@ phina.pixi = {
         blendMode: 'source-over',
         visible: true,
         alpha: 1,
+        interactive: false,
       },
       
       BLEND_MODES: {
