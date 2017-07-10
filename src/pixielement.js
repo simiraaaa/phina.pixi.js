@@ -224,6 +224,9 @@
      */
     setOrigin: function(x, y) {
       this.pixiObject.pivot.x = (x - 0.5) * this.width;
+      if (arguments.length <= 1) {
+        y = x;
+      }
       this.pixiObject.pivot.y = (y - 0.5) * this.height;
       return this;
     },
@@ -563,11 +566,11 @@
       right: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.x + pixiObject.pivot.x + this.width/2;
+          return pixiObject.position.x - pixiObject.pivot.x + this.width/2;
         },
         set: function(v) {
           var pixiObject = this.pixiObject;
-          pixiObject.position.x = v - pixiObject.pivot.x - this.width/2;
+          pixiObject.position.x = v + pixiObject.pivot.x - this.width/2;
           
         },
       },
@@ -579,11 +582,11 @@
       bottom: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.y + pixiObject.pivot.y + this.height/2;
+          return pixiObject.position.y - pixiObject.pivot.y + this.height/2;
         },
         set: function(v) {
           var pixiObject = this.pixiObject;
-          pixiObject.position.y = v - pixiObject.pivot.y - this.height/2;
+          pixiObject.position.y = v + pixiObject.pivot.y - this.height/2;
         },
       },
    
@@ -594,11 +597,11 @@
       left: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.x + pixiObject.pivot.x - this.width / 2;
+          return pixiObject.position.x - pixiObject.pivot.x - this.width / 2;
         },
         set: function(v) {
           var pixiObject = this.pixiObject;
-          pixiObject.position.x = v - pixiObject.pivot.x + this.width / 2;
+          pixiObject.position.x = v + pixiObject.pivot.x + this.width / 2;
         },
       },
 
@@ -609,7 +612,7 @@
       centerX: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.x + pixiObject.pivot.x;
+          return pixiObject.position.x - pixiObject.pivot.x;
         },
         set: function(v) {
           // TODO: どうしようかな??
@@ -623,7 +626,7 @@
       centerY: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.y + pixiObject.pivot.y;
+          return pixiObject.position.y - pixiObject.pivot.y;
         },
         set: function(v) {
           // TODO: どうしようかな??
