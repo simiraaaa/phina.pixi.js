@@ -401,16 +401,16 @@
        * x座標値
        */
       x: {
-        get: function()   { return this.pixiObject.position.x; },
-        set: function(v)  { this.pixiObject.position.x = v; }
+        get: function() { return this.pixiObject.position.x; },
+        set: function(v) { this.pixiObject.position.x = v; }
       },
       /**
        * @property    y
        * y座標値
        */
       y: {
-        get: function()   { return this.pixiObject.position.y; },
-        set: function(v)  { this.pixiObject.position.y = v; }
+        get: function() { return this.pixiObject.position.y; },
+        set: function(v) { this.pixiObject.position.y = v; }
       },
       
       pivot: {
@@ -440,10 +440,10 @@
        * x座標値
        */
       originX: {
-        get: function()   {
+        get: function() {
           return this._origin.x;
         },
-        set: function(v)  {
+        set: function(v) {
           this._origin.x = v;
           this.pixiObject.pivot.x = (v - 0.5) * this.width;
         }
@@ -454,10 +454,10 @@
        * y座標値
        */
       originY: {
-        get: function()   {
+        get: function() {
           return this._origin.y;
         },
-        set: function(v)  {
+        set: function(v) {
           this._origin.y = v;
           this.pixiObject.pivot.y = (v - 0.5) * this.height;
         }
@@ -480,10 +480,10 @@
        * スケールX値
        */
       scaleX: {
-        get: function()   {
+        get: function() {
           return this._scale.x;
         },
-        set: function(v)  {
+        set: function(v) {
           var prev = this.width;
           this._scale.x = v;
           this.width = prev;
@@ -495,10 +495,10 @@
        * スケールY値
        */
       scaleY: {
-        get: function()   {
+        get: function() {
           return this._scale.y;
         },
-        set: function(v)  {
+        set: function(v) {
           var prev = this.height;
           this._scale.y = v;
           this.height = prev;
@@ -510,39 +510,41 @@
        * width
        */
       width: {
-        get: function()   {
+        get: function() {
           return (this.boundingType === 'rect') ?
             this.pixiObject.width / this._scale.x : this._diameter;
         },
-        set: function(v)  {
+        set: function(v) {
           this.pixiObject.width = v * this._scale.x;
           this.pixiObject.pivot.x = (this._origin.x - 0.5) * v;
         }
       },
+      
       /**
        * @property    height
        * height
        */
       height: {
-        get: function()   {
+        get: function() {
           return (this.boundingType === 'rect') ?
             this.pixiObject.height / this._scale.y : this._diameter;
         },
-        set: function(v)  {
+        set: function(v) {
           this.pixiObject.height = v * this._scale.y;
           this.pixiObject.pivot.y = (this._origin.y - 0.5) * v;
         },
+      },
 
       /**
        * @property    radius
        * 半径
        */
       radius: {
-        get: function()   {
+        get: function() {
           return (this.boundingType === 'rect') ?
             (this.width+this.height)/4 : this._radius;
         },
-        set: function(v)  {
+        set: function(v) {
           this._radius = v;
           this._diameter = v*2;
           this.pixiObject.width = this._diameter * this._scale.x;
@@ -555,12 +557,12 @@
        * 左
        */
       top: {
-        get: function()   {
+        get: function() {
           var pixiObject = this.pixiObject;
           return pixiObject.position.y - pixiObject.pivot.y - this.height/2 ;
         },
-        set: function(v)  {
-          var pixi = this.pixiObject;
+        set: function(v) {
+          var pixiObject = this.pixiObject;
           pixiObject.position.y = v + pixiObject.pivot.y + this.height/2;
         },
       },
@@ -570,11 +572,11 @@
        * 左
        */
       right: {
-        get: function()   {
+        get: function() {
           var pixiObject = this.pixiObject;
           return pixiObject.position.x + pixiObject.pivot.x + this.width/2;
         },
-        set: function(v)  {
+        set: function(v) {
           var pixiObject = this.pixiObject;
           pixiObject.position.x = v - pixiObject.pivot.x - this.width/2;
           
@@ -586,11 +588,11 @@
        * 左
        */
       bottom: {
-        get: function()   {
+        get: function() {
           var pixiObject = this.pixiObject;
           return pixiObject.position.y + pixiObject.pivot.y + this.height/2;
         },
-        set: function(v)  {
+        set: function(v) {
           var pixiObject = this.pixiObject;
           pixiObject.position.y = v - pixiObject.pivot.y - this.height/2;
         },
@@ -601,11 +603,11 @@
        * 左
        */
       left: {
-        get: function()   {
+        get: function() {
           var pixiObject = this.pixiObject;
           return pixiObject.position.x + pixiObject.pivot.x - this.width / 2;
         },
-        set: function(v)  {
+        set: function(v) {
           var pixiObject = this.pixiObject;
           pixiObject.position.x = v - pixiObject.pivot.x + this.width / 2;
         },
@@ -616,11 +618,11 @@
        * centerX
        */
       centerX: {
-        get: function()   {
+        get: function() {
           var pixiObject = this.pixiObject;
           return pixiObject.position.x + pixiObject.pivot.x;
         },
-        set: function(v)  {
+        set: function(v) {
           // TODO: どうしようかな??
         }
       },
@@ -630,11 +632,11 @@
        * centerY
        */
       centerY: {
-        get: function()   {
+        get: function() {
           var pixiObject = this.pixiObject;
           return pixiObject.position.y + pixiObject.pivot.y;
         },
-        set: function(v)  {
+        set: function(v) {
           // TODO: どうしようかな??
         }
       },
