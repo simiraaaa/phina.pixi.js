@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <title>phina.pixi.js テスト</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .flex {
+        display: flex;
+      }
+      .between {
+        justify-content: space-between;
+      }
+      .side {
+        width: 30%;
+        height: 100vh;
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
+      .side button {
+        border: none;
+        border-bottom: 1px silver solid;
+        background-color: white;
+      }
+      .test {
+        width: 70%;
+        height: 100vh;
+      }
+      .test iframe {
+        border: none;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex between">
+      <div class="side" id="side"></div>
+      <div class="test" id="test">
+        <iframe id="frame" src="test.html"></iframe>
+      </div>
+    </div>
+    <script src="test.js"></script>
+  </body>
+</html>

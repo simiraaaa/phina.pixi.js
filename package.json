@@ -30,6 +30,8 @@
     "gulp-helper": "^1.0.3",
     "gulp-replace": "^0.6.1",
     "gulp-uglify": "^3.0.0",
-    "gulp-util": "^3.0.8"
+    "gulp-util": "^3.0.8",
+    "gulp-webserver": "^0.9.1",
+    "ip": "^1.1.5"
   }
 }

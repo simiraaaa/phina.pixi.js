@@ -1,6 +1,7 @@
 var gulp = require('gulp'); // gulpを読み込む
 var gutil = require('gulp-util');
 var ghelper = require('gulp-helper');
+var ip = require('ip');
 ghelper.require();
 
 var SCRIPTS = `
@@ -49,7 +50,19 @@ gulp.task('build', ['prebuild'], () => {
 
 });
 
-gulp.task('watch', ['build'], function() {
+
+gulp.task('webserver', function() {
+  gulp.src('.')
+    .pipe(webserver({
+      host: ip.address(),
+      // livereload: true,
+      // port: 9000,
+      directoryListing: true,
+      open: true,
+    }));
+});
+
+gulp.task('watch', ['build', 'webserver'], function() {
   gulp.watch(['./src/*'], ['build']);
 });
 
