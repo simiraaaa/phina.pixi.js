@@ -43,6 +43,13 @@
         }
         return _fitFunc;
       },
+
+      mulMatVec2: function(mat, vec2) {
+        var vx = mat.a*vec2.x + mat.b*vec2.y + mat.tx;
+        var vy = mat.c*vec2.x + mat.d*vec2.y + mat.ty;
+        
+        return phina.geom.Vector2(vx, vy);
+      },
     }
 
   });

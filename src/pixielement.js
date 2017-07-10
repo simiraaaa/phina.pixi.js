@@ -40,9 +40,6 @@
       this.blendMode = options.blendMode;
       this.visible = options.visible;
       
-      this._matrix = phina.geom.Matrix33().identity();
-      this._worldMatrix = phina.geom.Matrix33().identity();
-
       this.interactive = options.interactive;
       this._overFlags = {};
       this._touchFlags = {};
@@ -153,13 +150,9 @@
 
 
     globalToLocal: function(p) {
-      var matrix = this._worldMatrix.clone();
+      var matrix = this.pixiObject.worldTransform.clone();
       matrix.invert();
-      // matrix.transpose();
-
-      var temp = matrix.multiplyVector2(p);
-
-      return temp;
+      return phina.pixi.PixiUtil.mulMatVec2(matrix, p);
     },
 
     setInteractive: function(flag, type) {
@@ -506,7 +499,7 @@
       width: {
         get: function() {
           return (this.boundingType === 'rect') ?
-            this.pixiObject.width / this._scale.x : this._diameter;
+            this.pixiObject._width / this._scale.x : this._diameter;
         },
         set: function(v) {
           this.pixiObject.width = v * this._scale.x;
@@ -521,7 +514,7 @@
       height: {
         get: function() {
           return (this.boundingType === 'rect') ?
-            this.pixiObject.height / this._scale.y : this._diameter;
+            this.pixiObject._height / this._scale.y : this._diameter;
         },
         set: function(v) {
           this.pixiObject.height = v * this._scale.y;
