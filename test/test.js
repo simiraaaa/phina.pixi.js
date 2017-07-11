@@ -207,17 +207,42 @@ var TEST_MAP = {
     }
   },
 
-  rotation: {
+  visualProperties: {
     init: function() {
       this.superInit();
       var sp = phina.pixi.PixiSprite('tomapiko')
         .addChildTo(this)
         .setPosition(this.gridX.center(1), this.gridY.center(1));
       sp.tweener.to({
-        rotation: 3600
-      }, 2000, 'swing');
+        rotation: 720,
+        alpha: 0,
+        width: 100,
+        height: 100,
+      }, 2000, 'swing').to({
+        alpha: 1,
+        scaleX: -2,
+        scaleY: 2,
+      }, 2000, 'easeInBack').to({
+        rotation: 0,
+      }).to({
+        scaleX: 1,
+        scaleY: -1
+      }).setLoop(true);
     },
-    controll: true,
+    see: true,
+  },
+
+  TextureFromShape: {
+    init: function() {
+      this.superInit();
+      var shape = phina.display.StarShape();
+      var texture = phina.pixi.PixiTexture.fromShape(shape);
+      var sprite = phina.pixi.PixiSprite(texture).addChildTo(this);
+      sprite.setPosition(this.gridX.center(), this.gridY.center());
+      sprite.tweener.to({
+        rotation: 720
+      });
+    }
   }
 
 };
