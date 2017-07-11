@@ -205,6 +205,19 @@ var TEST_MAP = {
       assertMessage(flag);
       if(!flag) sp.setPosition(320, 480).setOrigin(0.5);
     }
+  },
+
+  rotation: {
+    init: function() {
+      this.superInit();
+      var sp = phina.pixi.PixiSprite('tomapiko')
+        .addChildTo(this)
+        .setPosition(this.gridX.center(1), this.gridY.center(1));
+      sp.tweener.to({
+        rotation: 3600
+      }, 2000, 'swing');
+    },
+    controll: true,
   }
 
 };
