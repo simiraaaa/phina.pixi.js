@@ -242,7 +242,9 @@ var TEST_MAP = {
       sprite.tweener.to({
         rotation: 720
       });
-    }
+    },
+
+    see: true,
   }
 
 };
