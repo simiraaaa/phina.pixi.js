@@ -32,13 +32,35 @@
       this._image = this._image.createFrame(x, y, width, height);
       return this;
     },
-
+    /**
+     * @param {HTMLCanvasElement} canvas
+     */
+    fromCanvas: function(canvas, x, y, width, height) {
+      return this.setImage(phina.pixi.PixiTexture().fromCanvas(canvas), x, y, width, height);
+    },
+    /**
+     * @param {phina.display.Shape} shape
+     */
+    fromShape: function(shape, x, y, width, height) {
+      return this.setImage(phina.pixi.PixiTexture().fromShape(shape), x, y, width, height);
+    },
+    
     _accessor: {
       image: {
         get: function() { return this._image; },
         set: function(v) {
           this.setImage(v);
         }
+      },
+    },
+
+    _static: {
+      fromCanvas: function(canvas, x, y, width, height) {
+        return phina.pixi.PixiSprite().fromCanvas(canvas, x, y, width, height);
+      },
+
+      fromShape: function(shape, x, y, width, height) {
+        return phina.pixi.PixiSprite().fromShape(shape, x, y, width, height);
       },
     }
   });
