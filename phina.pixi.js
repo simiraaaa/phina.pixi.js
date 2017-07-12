@@ -38,6 +38,23 @@ if (PIXI.VERSION[0] !== '3') {
 
 phina.pixi = {
   VERSION: '0.0.1',
+  globalMap: {
+    PixiElement: 'DisplayElement',
+    PixiSprite: 'Sprite',
+    PixiTexture: 'Texture',
+    PixiScene: 'DisplayScene',
+    PixiRenderer: 'Renderer',
+    PixiApp: 'App',
+    PixiUtil: 'Util',
+  },
+  globalize: function() {
+    var global = phina.global;
+    var pixi = phina.pixi;
+    
+    pixi.globalMap.forIn(function(name, globalName) {
+      global[globalName] = pixi[name];
+    });
+  }
 };
 
 
@@ -85,6 +102,13 @@ phina.pixi = {
           phina.global.addEventListener("resize", _fitFunc, false);
         }
         return _fitFunc;
+      },
+
+      mulMatVec2: function(mat, vec2) {
+        var vx = mat.a*vec2.x + mat.b*vec2.y + mat.tx;
+        var vy = mat.c*vec2.x + mat.d*vec2.y + mat.ty;
+        
+        return phina.geom.Vector2(vx, vy);
       },
     }
 
@@ -198,7 +222,6 @@ phina.pixi = {
         x = x.x;
       }
       var newTexture = phina.pixi.PixiTexture();
-      newTexture.phinaTexture = this.phinaTexture;
       newTexture.pixiTexture = new PIXI.Texture(this.pixiTexture.baseTexture, new PIXI.math.Rectangle(x, y, width, height));
 
       return newTexture;
@@ -207,6 +230,68 @@ phina.pixi = {
     setKey: function(key) {
       this.key = key;
       return this;
+    },
+    
+    /**
+     * @param {HTMLCanvasElement} canvas
+     */
+    fromCanvas: function(canvas) {
+      this.pixiTexture = PIXI.Texture.fromCanvas(canvas);
+      return this;
+    },
+
+    /**
+     * @param {phina.display.Shape} shape
+     */
+    fromShape: function(shape) {
+      if(shape._dirtyDraw) {
+        shape.render(shape.canvas);
+      }
+      return this.fromCanvas(shape.canvas.domElement);
+    },
+
+    update: function() {
+      this.pixiTexture.update();
+      return this;
+    },
+
+    _accessor: {
+      width: {
+        get: function() {
+          return this.pixiTexture.width;
+        },
+
+        set: function(v) {
+          this.pixiTexture.width = v;
+        }
+      },
+
+      height: {
+        get: function() {
+          return this.pixiTexture.height;
+        },
+
+        set: function(v) {
+          this.pixiTexture.height = v;
+        }
+      },
+    },
+
+    _static: {
+      
+      /**
+       * @param {HTMLCanvasElement} canvas
+       */
+      fromCanvas: function(canvas) {
+        return phina.pixi.PixiTexture().fromCanvas(canvas);
+      },
+
+      /**
+       * @param {phina.display.Shape} shape
+       */
+      fromShape: function(shape) {
+        return phina.pixi.PixiTexture().fromShape(shape);
+      }
     }
     
   });
@@ -239,14 +324,11 @@ phina.pixi = {
       
       this._scale = phina.geom.Vector2(1, 1);
       this._origin = phina.geom.Vector2(0.5, 0.5);
-      
-      if(this.boundingType === 'rect') {
-        this.width = options.width;
-        this.height = options.height;
-      }
-      else {
-        this.radius = options.radius;
-      }
+    
+      this.width = options.width;
+      this.height = options.height;
+      this.radius = options.radius;
+
       this.x = options.x;
       this.y = options.y;
       
@@ -261,12 +343,9 @@ phina.pixi = {
       this.blendMode = options.blendMode;
       this.visible = options.visible;
       
-      this._matrix = phina.geom.Matrix33().identity();
-      this._worldMatrix = phina.geom.Matrix33().identity();
-
       this.interactive = options.interactive;
       this._overFlags = {};
-      this._touchFlags = {};      
+      this._touchFlags = {};
     },
     
     
@@ -374,13 +453,9 @@ phina.pixi = {
 
 
     globalToLocal: function(p) {
-      var matrix = this._worldMatrix.clone();
+      var matrix = this.pixiObject.worldTransform.clone();
       matrix.invert();
-      // matrix.transpose();
-
-      var temp = matrix.multiplyVector2(p);
-
-      return temp;
+      return phina.pixi.PixiUtil.mulMatVec2(matrix, p);
     },
 
     setInteractive: function(flag, type) {
@@ -452,6 +527,9 @@ phina.pixi = {
      */
     setOrigin: function(x, y) {
       this.pixiObject.pivot.x = (x - 0.5) * this.width;
+      if (arguments.length <= 1) {
+        y = x;
+      }
       this.pixiObject.pivot.y = (y - 0.5) * this.height;
       return this;
     },
@@ -542,32 +620,29 @@ phina.pixi = {
       return this;
     },
 
-    // /**
-    //  * 表示/非表示をセット
-    //  */
-    // setVisible: function(flag) {
-    //   throw new Error('visible は未実装です。');
-    //   this.visible = flag;
-    //   return this;
-    // },
+    /**
+     * 表示/非表示をセット
+     */
+    setVisible: function(flag) {
+      this.pixiObject.visible = flag;
+      return this;
+    },
 
-    // /**
-    //  * 表示
-    //  */
-    // show: function() {
-    //   throw new Error('visible は未実装です。');
-    //   this.visible = true;
-    //   return this;
-    // },
+    /**
+     * 表示
+     */
+    show: function() {
+      this.pixiObject.visible = true;
+      return this;
+    },
 
-    // /**
-    //  * 非表示
-    //  */
-    // hide: function() {
-    //   throw new Error('visible は未実装です。');
-    //   this.visible = false;
-    //   return this;
-    // },
+    /**
+     * 非表示
+     */
+    hide: function() {
+      this.pixiObject.visible = false;
+      return this;
+    },
 
     /**
      * @private
@@ -730,7 +805,7 @@ phina.pixi = {
       width: {
         get: function() {
           return (this.boundingType === 'rect') ?
-            this.pixiObject.width / this._scale.x : this._diameter;
+            this.pixiObject._width / this._scale.x : this._diameter;
         },
         set: function(v) {
           this.pixiObject.width = v * this._scale.x;
@@ -745,7 +820,7 @@ phina.pixi = {
       height: {
         get: function() {
           return (this.boundingType === 'rect') ?
-            this.pixiObject.height / this._scale.y : this._diameter;
+            this.pixiObject._height / this._scale.y : this._diameter;
         },
         set: function(v) {
           this.pixiObject.height = v * this._scale.y;
@@ -765,8 +840,10 @@ phina.pixi = {
         set: function(v) {
           this._radius = v;
           this._diameter = v*2;
-          this.pixiObject.width = this._diameter * this._scale.x;
-          this.pixiObject.height = this._diameter * this._scale.y;
+          if(this.boundingType === 'circle') {
+            this.pixiObject.width = this._diameter * this._scale.x;
+            this.pixiObject.height = this._diameter * this._scale.y;
+          }
         },
       },
       
@@ -792,11 +869,11 @@ phina.pixi = {
       right: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.x + pixiObject.pivot.x + this.width/2;
+          return pixiObject.position.x - pixiObject.pivot.x + this.width/2;
         },
         set: function(v) {
           var pixiObject = this.pixiObject;
-          pixiObject.position.x = v - pixiObject.pivot.x - this.width/2;
+          pixiObject.position.x = v + pixiObject.pivot.x - this.width/2;
           
         },
       },
@@ -808,11 +885,11 @@ phina.pixi = {
       bottom: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.y + pixiObject.pivot.y + this.height/2;
+          return pixiObject.position.y - pixiObject.pivot.y + this.height/2;
         },
         set: function(v) {
           var pixiObject = this.pixiObject;
-          pixiObject.position.y = v - pixiObject.pivot.y - this.height/2;
+          pixiObject.position.y = v + pixiObject.pivot.y - this.height/2;
         },
       },
    
@@ -823,11 +900,11 @@ phina.pixi = {
       left: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.x + pixiObject.pivot.x - this.width / 2;
+          return pixiObject.position.x - pixiObject.pivot.x - this.width / 2;
         },
         set: function(v) {
           var pixiObject = this.pixiObject;
-          pixiObject.position.x = v - pixiObject.pivot.x + this.width / 2;
+          pixiObject.position.x = v + pixiObject.pivot.x + this.width / 2;
         },
       },
 
@@ -838,7 +915,7 @@ phina.pixi = {
       centerX: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.x + pixiObject.pivot.x;
+          return pixiObject.position.x - pixiObject.pivot.x;
         },
         set: function(v) {
           // TODO: どうしようかな??
@@ -852,7 +929,7 @@ phina.pixi = {
       centerY: {
         get: function() {
           var pixiObject = this.pixiObject;
-          return pixiObject.position.y + pixiObject.pivot.y;
+          return pixiObject.position.y - pixiObject.pivot.y;
         },
         set: function(v) {
           // TODO: どうしようかな??
@@ -881,6 +958,11 @@ phina.pixi = {
         set: function(v) {
           this.pixiObject.alpha = v;
         }
+      },
+
+      visible: {
+        get: function() { return this.pixiObject.visible; },
+        set: function(v) { this.pixiObject.visible = v; },
       }
     },
     
@@ -927,9 +1009,7 @@ phina.pixi = {
       this.superInit(options = (options || {}).$safe(phina.pixi.PixiScene.defaults));
 
       // this.backgroundColor = (options.backgroundColor) ? options.backgroundColor : null;
-      
-      this.width = options.width;
-      this.height = options.height;
+
       this.gridX = phina.util.Grid(options.width, 16);
       this.gridY = phina.util.Grid(options.height, 16);
 
@@ -957,10 +1037,6 @@ phina.pixi = {
       return this;
     },
 
-    hitTest: function() {
-      return true;
-    },
-
     _update: function() {
       if (this.update) {
         this.update();
@@ -974,8 +1050,29 @@ phina.pixi = {
       defaults: {
         width: 640,
         height: 960,
+        boundingType: 'none',
       },
-    }
+    },
+
+    _accessor: {
+      width: {
+        get: function() {
+          return this.pixiObject._width / this._scale.x;
+        },
+        set: function(v) {
+          this.pixiObject.width = v * this._scale.x;
+        },
+      },
+
+      height: {
+        get: function() {
+          return this.pixiObject._height / this._scale.y;
+        },
+        set: function(v) {
+          this.pixiObject.height = v * this._scale.y;
+        }
+      },
+    },
 
     
   });
@@ -1012,16 +1109,42 @@ phina.pixi = {
     },
 
     setFrame: function(x, y, width, height) {
-      this._image = this._image.createFrame(x, y, width, height);
-      return this;
+      return this.setImage(this.image, x, y, width, height);
+    },
+    /**
+     * @param {HTMLCanvasElement} canvas
+     */
+    fromCanvas: function(canvas, x, y, width, height) {
+      return this.setImage(phina.pixi.PixiTexture().fromCanvas(canvas), x, y, width, height);
+    },
+    /**
+     * @param {phina.display.Shape} shape
+     */
+    fromShape: function(shape, x, y, width, height) {
+      return this.setImage(phina.pixi.PixiTexture().fromShape(shape), x, y, width, height);
     },
 
+    updateTexture: function() {
+      this.image.update();
+      return this;
+    },
+    
     _accessor: {
       image: {
         get: function() { return this._image; },
         set: function(v) {
           this.setImage(v);
         }
+      },
+    },
+
+    _static: {
+      fromCanvas: function(canvas, x, y, width, height) {
+        return phina.pixi.PixiSprite().fromCanvas(canvas, x, y, width, height);
+      },
+
+      fromShape: function(shape, x, y, width, height) {
+        return phina.pixi.PixiSprite().fromShape(shape, x, y, width, height);
       },
     }
   });
