@@ -21,9 +21,9 @@ gulp
 
 現状サンプルはありませんが、テストのコードを見ると少しわかると思います。
 
-https://rawgit.com/simiraaaa/phina.pixi.js/master/test/index.html
-https://rawgit.com/simiraaaa/phina.pixi.js/master/test/test.html
-https://rawgit.com/simiraaaa/phina.pixi.js/master/test/test.js
+- https://rawgit.com/simiraaaa/phina.pixi.js/master/test/index.html
+- https://rawgit.com/simiraaaa/phina.pixi.js/master/test/test.html
+- https://rawgit.com/simiraaaa/phina.pixi.js/master/test/test.js
 
 ## License
 MIT
