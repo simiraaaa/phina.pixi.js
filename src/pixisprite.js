@@ -29,8 +29,7 @@
     },
 
     setFrame: function(x, y, width, height) {
-      this._image = this._image.createFrame(x, y, width, height);
-      return this;
+      return this.setImage(this.image, x, y, width, height);
     },
     /**
      * @param {HTMLCanvasElement} canvas
