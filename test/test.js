@@ -1,5 +1,21 @@
 
 var TEST_MAP = {
+  globalize: {
+    init: function() {
+      this.superInit();
+      phina.globalize();
+      phina.pixi.globalize();
+      var layer = DisplayElement().addChildTo(this);
+      Sprite('tomapiko').addChildTo(this)
+      .setPosition(this.gridX.center(), this.gridY.center());
+
+      Sprite(Texture.fromShape(TriangleShape())).addChildTo(layer)
+      .setPosition(this.gridX.center(), this.gridY.center());
+    },
+
+    see: true,
+  },
+
   Element_defaults: {
     init: function(){
       this.superInit();
