@@ -261,6 +261,57 @@ var TEST_MAP = {
     see: true,
   },
 
+  SpriteFrame: {
+    init: function() {
+      this.superInit();
+      var sprite = phina.pixi.PixiSprite('tomapiko').addChildTo(this);
+      sprite.setPosition(this.gridX.center(), this.gridY.center());
+      sprite.setFrame(0, 0, sprite.width, sprite.height / 2);
+      sprite.setOrigin(0.5, 1);
+
+      var sprite2 = phina.pixi.PixiSprite('tomapiko').addChildTo(this);
+      sprite2.setPosition(this.gridX.center(), this.gridY.center());
+      sprite2.setFrame(0, sprite2.height / 2, sprite2.width, sprite2.height / 2);
+      sprite2.setOrigin(0.5, 0);
+      
+      var self = this;
+
+      sprite.tweener
+      .by({
+        y: -100,
+      }, 1000, 'swing')
+      .by({
+        y: 100
+      }, 500, 'easeInBack')
+      .wait(500)
+      .setLoop(true);
+      
+      sprite2.tweener
+      .by({
+        y: 100,
+      }, 1000, 'swing')
+      .by({
+        y: -100
+      }, 500, 'easeInBack')
+      .call(function(){
+        phina.pixi.PixiSprite()
+        .fromShape(phina.display.StarShape())
+        .addChildTo(self)
+        .setPosition(sprite2.x, sprite2.y)
+        .tweener.to({
+          scaleX: 5,
+          scaleY: 5,
+          alpha: 0,
+        }, 500, 'easeOutCirc').call(function() {
+          this.target.remove();
+        });
+      })
+      .wait(500)
+      .setLoop(true);
+    },
+    see: true
+  }
+
 };
 
 var ASSETS = {
