@@ -245,7 +245,21 @@ var TEST_MAP = {
     },
 
     see: true,
-  }
+  },
+
+  SpriteFromShape: {
+    init: function() {
+      this.superInit();
+      var shape = phina.display.HeartShape();
+      var sprite = phina.pixi.PixiSprite().fromShape(shape).addChildTo(this);
+      sprite.setPosition(this.gridX.center(), this.gridY.center());
+      sprite.tweener.to({
+        rotation: 720
+      });
+    },
+
+    see: true,
+  },
 
 };
 
