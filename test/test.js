@@ -107,6 +107,38 @@ var TEST_MAP = {
     },
   },
 
+  hitTestElement: {
+    init: function() {
+      this.superInit();
+      var sprite = this.sprite = Sprite().fromShape(RectangleShape({
+        fill: 'orange',
+        padding: 0
+      })).addChildTo(this);
+      Draggable().attachTo(sprite);
+      sprite.setPosition(this.gridX.center(), this.gridY.center());
+      var shape = this.shape = RectangleShape({
+        padding: 0,
+      });
+      var rect = this.rect = Sprite().fromShape(shape).addChildTo(this);
+      rect.setPosition(this.gridX.center(2), this.gridY.center(2));
+      Draggable().attachTo(rect);
+    },
+    controll: true,
+    update: function(app) {
+      if(this.sprite.hitTestElement(this.rect)) {
+        this.shape.fill = 'red';
+      }
+      else {
+        this.shape.fill = 'blue';
+      }
+
+      if(this.shape._dirtyDraw) {
+        this.shape.render(this.shape.canvas);
+        this.rect.updateTexture();
+      }
+    }
+  },
+
   Sprite_interactive: {
     init:function() {
       this.superInit();
