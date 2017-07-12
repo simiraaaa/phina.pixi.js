@@ -7,5 +7,28 @@
 <script src="https://cdn.rawgit.com/simiraaaa/phina.pixi.js/v0.0.1/phina.pixi.js"></script>
 
 ```
+# develop
+
+## init
+
+```
+npm install
+
+```
+
+```
+
+gulp
+
+```
+
+# example
+
+現状サンプルはありまえんが、テストのコードを見ると少しわかると思います。
+
+https://rawgit.com/simiraaaa/phina.pixi.js/master/test/index.html
+https://rawgit.com/simiraaaa/phina.pixi.js/master/test/test.html
+https://rawgit.com/simiraaaa/phina.pixi.js/master/test/test.js
+
 ## License
 MIT
