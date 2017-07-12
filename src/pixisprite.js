@@ -43,6 +43,11 @@
     fromShape: function(shape, x, y, width, height) {
       return this.setImage(phina.pixi.PixiTexture().fromShape(shape), x, y, width, height);
     },
+
+    updateTexture: function() {
+      this.image.update();
+      return this;
+    },
     
     _accessor: {
       image: {

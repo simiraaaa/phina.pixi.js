@@ -50,6 +50,11 @@
       return this.fromCanvas(shape.canvas.domElement);
     },
 
+    update: function() {
+      this.pixiTexture.update();
+      return this;
+    },
+
     _accessor: {
       width: {
         get: function() {
@@ -60,7 +65,7 @@
           this.pixiTexture.width = v;
         }
       },
-      
+
       height: {
         get: function() {
           return this.pixiTexture.height;
