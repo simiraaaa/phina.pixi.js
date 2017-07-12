@@ -38,5 +38,22 @@ if (PIXI.VERSION[0] !== '3') {
 
 phina.pixi = {
   VERSION: '<%= VERSION %>',
+  globalMap: {
+    PixiElement: 'DisplayElement',
+    PixiSprite: 'Sprite',
+    PixiTexture: 'Texture',
+    PixiScene: 'DisplayScene',
+    PixiRenderer: 'Renderer',
+    PixiApp: 'App',
+    PixiUtil: 'Util',
+  },
+  globalize: function() {
+    var global = phina.global;
+    var pixi = phina.pixi;
+    
+    pixi.globalMap.forIn(function(name, globalName) {
+      global[globalName] = pixi[name];
+    });
+  }
 };
 
