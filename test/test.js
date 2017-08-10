@@ -123,7 +123,7 @@ var TEST_MAP = {
       rect.setPosition(this.gridX.center(2), this.gridY.center(2));
       Draggable().attachTo(rect);
     },
-    controll: true,
+    control: true,
     update: function(app) {
       if(this.sprite.hitTestElement(this.rect)) {
         this.shape.fill = 'red';
@@ -184,7 +184,7 @@ var TEST_MAP = {
       };
     },
 
-    controll: true,
+    control: true,
   },
 
   Sprite_origin: {
@@ -358,7 +358,36 @@ var TEST_MAP = {
       .setLoop(true);
     },
     see: true
-  }
+  },
+
+  PixiLabel: {
+    init: function() {
+      this.superInit();
+      var label = phina.pixi.PixiLabel({
+        text: 1234,
+        fontSize: 50,
+      }).addChildTo(this);
+      label.setPosition(this.gridX.center(), this.gridY.center());
+      label.update = function(){
+        this.text++;
+      };
+      
+      Draggable().attachTo(label);
+      
+      label.onpointstart = function(){
+        this.fill = 'red';
+        this.stroke = 'black';
+        this.fontSize = 100;
+      };
+      label.onpointend = function(){
+        this.fill = 'black';
+        this.stroke = false;
+        this.fontSize = 50;
+      };
+      
+    },
+    control: true,
+  },
 
 };
 
@@ -414,9 +443,9 @@ else {
       button.style.color = 'white';
       button.textContent = 'see: ' + k;
     }
-    if(TEST_MAP[k].controll) {
+    if(TEST_MAP[k].control) {
       button.style.backgroundColor = 'orange';
-      button.textContent = 'controll: ' + k;
+      button.textContent = 'control: ' + k;
     }
     button.onclick = function() {
       var f = document.getElementById('frame');
@@ -516,11 +545,11 @@ function seeMessage() {
     type: 'see'
   });
 }
-function controllMessage() {
+function controlMessage() {
   console.log(location.hash + ': このテストは操作して確認してください。');
   post({
     id: getId(),
-    type: 'controll'
+    type: 'control'
   });
 }
 
