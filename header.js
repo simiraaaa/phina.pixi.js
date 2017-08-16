@@ -46,6 +46,7 @@ phina.pixi = {
     PixiRenderer: 'Renderer',
     PixiApp: 'App',
     PixiUtil: 'Util',
+    PixiLabel: 'Label',
   },
   globalize: function() {
     var global = phina.global;
