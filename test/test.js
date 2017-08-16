@@ -389,6 +389,39 @@ var TEST_MAP = {
     control: true,
   },
 
+  colorStringToNumber: {
+    init: function () {
+      this.superInit();
+      var colors = [
+        '#707',
+        '#007700',
+        'red',
+        'skyblue',
+        'rgb(125, 50, 60)',
+        'hsl(120, 50%, 50%)'
+      ];
+      var self = this;
+      var g = new PIXI.Graphics();
+      phina.pixi.PixiElement({ pixiObject: g }).addChildTo(this);
+      colors.forEach(function (e, i) {
+        phina.pixi.PixiLabel({
+          text: e,
+          fill: 'white',
+          align: 'left',
+          strokeWidth: 10,
+          stroke: e,
+          fontSize: 48,
+        }).addChildTo(self)
+          .setPosition(self.gridX.span(1), (1 + i) * 100);
+
+        g.beginFill(phina.pixi.PixiUtil.colorStringToNumber(e));
+        g.drawRect(self.gridX.span(2), (1 + i) * 100 - 50, 500, 100);
+      });
+    },
+
+    see: true,
+  }
+
 };
 
 var ASSETS = {
