@@ -2,7 +2,7 @@
 
   /**
    * @class phina.pixi.PixiScene
-   * 
+   * @extends phina.pixi.PixiElement
    */
   phina.define('phina.pixi.PixiScene', {
     superClass: phina.pixi.PixiElement,

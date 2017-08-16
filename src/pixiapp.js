@@ -2,7 +2,7 @@
 
   /**
    * @class phina.pixi.PixiApp
-   * 
+   * @extends phina.display.DomApp
    */
   phina.define('phina.pixi.PixiApp', {
     superClass: phina.display.DomApp,

@@ -1,4 +1,8 @@
 (function(phina, PIXI) {
+  /**
+   * @class phina.pixi.PixiSprite
+   * @extends phina.pixi.PixiElement
+   */
   phina.define('phina.pixi.PixiSprite', {
     superClass: phina.pixi.PixiElement,
 

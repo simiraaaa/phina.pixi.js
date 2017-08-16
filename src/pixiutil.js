@@ -1,5 +1,8 @@
 (function(phina, PIXI) {
 
+  /**
+   * @class phina.pixi.PixiUtil
+   */
   var PixiUtil = phina.define('phina.pixi.PixiUtil', {
 
     init: function() {

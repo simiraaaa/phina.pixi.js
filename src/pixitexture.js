@@ -1,4 +1,8 @@
 (function(phina, PIXI) {
+  /**
+   * @class phina.pixi.PixiTexture
+   * @extends phina.asset.Asset
+   */
   phina.define('phina.pixi.PixiTexture', {
     superClass: phina.asset.Asset,
 

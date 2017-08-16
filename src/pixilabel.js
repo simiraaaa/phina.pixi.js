@@ -1,8 +1,8 @@
 (function(phina, PIXI){
 
   /**
-   * @class phina.pixi.PixiElement
-   * @extends phina.app.Element
+   * @class phina.pixi.PixiLabel
+   * @extends phina.app.PixiSprite
    */ 
   var PixiLabel = phina.define('phina.pixi.PixiLabel', {
     superClass: phina.pixi.PixiSprite,
