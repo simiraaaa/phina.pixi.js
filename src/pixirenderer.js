@@ -23,6 +23,8 @@
     init: function(options) {
       options = (options || {}).$safe(phina.pixi.PixiRenderer.defaults);
       this.pixiRenderer = PIXI.autoDetectRenderer(options.width, options.height, options);
+      this.pixiRenderer.plugins.interaction.destroy();
+      delete this.pixiRenderer.plugins.interaction;
     },
 
     /**
