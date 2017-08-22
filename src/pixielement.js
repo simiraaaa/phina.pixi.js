@@ -216,6 +216,21 @@
       }
       return this;
     },
+
+    /**
+     * childrenのスケールを考慮したスケールをセット
+     * @param {Number} x
+     * @param {Number} y
+     */
+    setLayerScale: function(x, y) {
+      this.layerScaleX = x;
+      if (arguments.length <= 1) {
+        this.layerScaleY = x;
+      } else {
+        this.layerScaleY = y;
+      }
+      return this;
+    },
     
     /**
      * 基準点をセット
@@ -492,6 +507,40 @@
           var prev = this.height;
           this._scale.y = v;
           this.height = prev;
+        }
+      },
+
+      /**
+       * @property    layerScaleX
+       * childrenのスケールを考慮したスケールX値
+       */
+      layerScaleX: {
+        get: function() {
+          return this._scale.x;
+        },
+        set: function(v) {
+          var scale = this.pixiObject.scale;
+          var _scale = this._scale;
+          var x = scale.x / _scale.x;
+          _scale.x = v;
+          scale.x = v * x;
+        }
+      },
+      
+      /**
+       * @property    layerScaleY
+       * childrenのスケールを考慮したスケールY値
+       */
+      layerScaleY: {
+        get: function() {
+          return this._scale.y;
+        },
+        set: function(v) {
+          var scale = this.pixiObject.scale;
+          var _scale = this._scale;
+          var y = scale.y / _scale.y;
+          _scale.y = v;
+          scale.y = v * y;
         }
       },
       
