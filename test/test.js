@@ -420,8 +420,22 @@ var TEST_MAP = {
     },
 
     see: true,
-  }
+  },
 
+  layerScale: {
+    init: function(){
+      this.superInit();
+      var layer = PixiElement().addChildTo(this).setPosition(this.gridX.center(), this.gridY.center());
+      Sprite('tomapiko').addChildTo(layer);
+      Sprite('tomapiko').addChildTo(layer).setScale(2).setPosition(50, 100);
+      layer.setLayerScale(0.5, 1.5);
+      layer.tweener.to({
+        layerScaleX: 2,
+        layerScaleY: 2,
+      });
+    },
+    see: true,
+  },
 };
 
 var ASSETS = {
