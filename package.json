@@ -1,6 +1,6 @@
 {
   "name": "phina.pixi.js",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "phina.js で pixi.js を使えるようにします",
   "main": "phina.pixi.js",
   "scripts": {
