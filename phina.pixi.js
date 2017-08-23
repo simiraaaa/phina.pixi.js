@@ -1554,12 +1554,12 @@ phina.pixi = {
 
     _draw: function() {
       var renderer = this.renderer;
-      renderer.clearBeforeRender = true;
+      renderer.pixiRenderer.clearBeforeRender = true;
       // this.renderer.clear(/* this.backgroundColor */);
       this._scenes.forEach(function(scene, i) {
         scene.pixiObject && renderer.render(scene);
         if (i === 0) {
-          renderer.clearBeforeRender = false;
+          renderer.pixiRenderer.clearBeforeRender = false;
         }
       });
     },
