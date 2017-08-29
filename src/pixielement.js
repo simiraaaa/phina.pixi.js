@@ -240,11 +240,11 @@
      * @param {Number} y
      */
     setOrigin: function(x, y) {
-      this.pixiObject.pivot.x = (x - 0.5) * this.width;
+      this.originX = x;
       if (arguments.length <= 1) {
         y = x;
       }
-      this.pixiObject.pivot.y = (y - 0.5) * this.height;
+      this.originY = y;
       return this;
     },
     
