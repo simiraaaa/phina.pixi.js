@@ -436,6 +436,22 @@ var TEST_MAP = {
     },
     see: true,
   },
+
+  SpriteScale0To1: {
+    init: function(){
+      this.superInit();
+      var s = PixiSprite().addChildTo(this);
+      // s.setBoundingType('circle');
+      s.fromShape(StarShape({
+        radius: 200
+      })).setPosition(320, 480);
+      // s.setSize(200, 200);
+      s.setScale(0);
+      s.setScale(1);
+      // console.log(s.width)
+    },
+    see: true
+  }
 };
 
 var ASSETS = {
