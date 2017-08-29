@@ -451,7 +451,26 @@ var TEST_MAP = {
       // console.log(s.width)
     },
     see: true
-  }
+  },
+
+  SpriteOriginAndScale: {
+    init: function(){
+      this.superInit();
+      var s = PixiSprite().addChildTo(this);
+      
+      s.fromShape(StarShape({
+        radius: 32
+      })).setPosition(320, 480);
+      s.tweener.to({
+        rotation: 360,
+        scaleX: 2,
+        scaleY: 2,
+      });
+      s.setOrigin(1,1);
+      
+    },
+    see: true
+  },
 };
 
 var ASSETS = {
