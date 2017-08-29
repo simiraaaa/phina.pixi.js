@@ -458,15 +458,18 @@ var TEST_MAP = {
       this.superInit();
       var s = PixiSprite().addChildTo(this);
       
-      s.fromShape(StarShape({
-        radius: 32
+      s.fromShape(RectangleShape({
+        width: 400,
+        height: 400,
       })).setPosition(320, 480);
       s.tweener.to({
         rotation: 360,
-        scaleX: 2,
-        scaleY: 2,
+        scaleX: 0.2,
+        scaleY: 0.2,
       });
       s.setOrigin(1,1);
+
+      PixiSprite.fromShape(CircleShape()).setPosition(320, 480).addChildTo(this);
       
     },
     see: true
