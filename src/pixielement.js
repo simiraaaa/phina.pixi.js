@@ -11,6 +11,8 @@
     boundingType: 'rect',
     _scale: null,
     _origin: null,
+    _width: 64,
+    _height: 64,
     init: function(options) {
       this.superInit();
       
@@ -489,9 +491,8 @@
           return this._scale.x;
         },
         set: function(v) {
-          var prev = this.width;
           this._scale.x = v;
-          this.width = prev;
+          this.width = this.width;
         }
       },
       
@@ -504,9 +505,8 @@
           return this._scale.y;
         },
         set: function(v) {
-          var prev = this.height;
           this._scale.y = v;
-          this.height = prev;
+          this.height = this.height;
         }
       },
 
@@ -551,9 +551,10 @@
       width: {
         get: function() {
           return (this.boundingType === 'rect') ?
-            this.pixiObject._width / this._scale.x : this._diameter;
+            this._width : this._diameter;
         },
         set: function(v) {
+          this._width = v;
           this.pixiObject.width = v * this._scale.x;
           this.pixiObject.pivot.x = (this._origin.x - 0.5) * v;
         }
@@ -566,9 +567,10 @@
       height: {
         get: function() {
           return (this.boundingType === 'rect') ?
-            this.pixiObject._height / this._scale.y : this._diameter;
+            this._height : this._diameter;
         },
         set: function(v) {
+          this._height = v;
           this.pixiObject.height = v * this._scale.y;
           this.pixiObject.pivot.y = (this._origin.y - 0.5) * v;
         },
