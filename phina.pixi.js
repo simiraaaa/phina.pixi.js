@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-@version 0.0.1
+@version 0.0.8
 */
 
 if (typeof phina === 'undefined') {
@@ -37,7 +37,7 @@ if (PIXI.VERSION[0] !== '3') {
 }
 
 phina.pixi = {
-  VERSION: '0.0.1',
+  VERSION: '0.0.8',
   globalMap: {
     PixiElement: 'DisplayElement',
     PixiSprite: 'Sprite',
@@ -540,6 +540,8 @@ phina.pixi = {
     boundingType: 'rect',
     _scale: null,
     _origin: null,
+    _width: 64,
+    _height: 64,
     init: function(options) {
       this.superInit();
       
@@ -767,11 +769,11 @@ phina.pixi = {
      * @param {Number} y
      */
     setOrigin: function(x, y) {
-      this.pixiObject.pivot.x = (x - 0.5) * this.width;
+      this.originX = x;
       if (arguments.length <= 1) {
         y = x;
       }
-      this.pixiObject.pivot.y = (y - 0.5) * this.height;
+      this.originY = y;
       return this;
     },
     
@@ -1018,9 +1020,8 @@ phina.pixi = {
           return this._scale.x;
         },
         set: function(v) {
-          var prev = this.width;
           this._scale.x = v;
-          this.width = prev;
+          this.width = this.width;
         }
       },
       
@@ -1033,9 +1034,8 @@ phina.pixi = {
           return this._scale.y;
         },
         set: function(v) {
-          var prev = this.height;
           this._scale.y = v;
-          this.height = prev;
+          this.height = this.height;
         }
       },
 
@@ -1080,9 +1080,10 @@ phina.pixi = {
       width: {
         get: function() {
           return (this.boundingType === 'rect') ?
-            this.pixiObject._width / this._scale.x : this._diameter;
+            this._width : this._diameter;
         },
         set: function(v) {
+          this._width = v;
           this.pixiObject.width = v * this._scale.x;
           this.pixiObject.pivot.x = (this._origin.x - 0.5) * v;
         }
@@ -1095,9 +1096,10 @@ phina.pixi = {
       height: {
         get: function() {
           return (this.boundingType === 'rect') ?
-            this.pixiObject._height / this._scale.y : this._diameter;
+            this._height : this._diameter;
         },
         set: function(v) {
+          this._height = v;
           this.pixiObject.height = v * this._scale.y;
           this.pixiObject.pivot.y = (this._origin.y - 0.5) * v;
         },
